@@ -3,265 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartSchool ERP v.11 - Single File Edition</title>
+    <title>SmartSchool ERP v.12 - Multi-Class & Multi-Role</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.5s; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .hide { display: none !important; }
-        
-        /* Animasi Transisi Halaman */
-        .page-transition { animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Animasi Tombol & Kartu */
-        .hover-card { transition: all 0.3s ease; }
-        .hover-card:hover { transform: translateY(-5px); border-color: #6366f1; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        
-        .sidebar-btn.active { @apply bg-indigo-600 text-white shadow-lg shadow-indigo-200; }
+        .page-transition { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .sidebar-btn.active { @apply bg-indigo-600 text-white shadow-lg; }
     </style>
 </head>
-<body class="bg-[#F1F5F9] text-slate-900">
+<body class="bg-[#F8FAFC] text-slate-900">
 
-    <div id="landing-view" class="min-h-screen flex flex-col items-center justify-center p-6 text-center page-transition">
-        <div class="absolute top-0 left-0 w-full h-full -z-10 opacity-30">
-            <div class="absolute top-10 left-10 w-64 h-64 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-10 right-10 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        </div>
-        
-        <h1 class="text-7xl font-black tracking-tighter text-slate-900 mb-4 uppercase">Smart<span class="text-indigo-600">School.</span></h1>
-        <p class="text-xl text-slate-500 max-w-2xl mb-10 leading-relaxed">Sistem ERP Sekolah Terintegrasi. Kelola murid, guru, absensi, dan keuangan hanya dalam satu platform canggih.</p>
-        
-        <div class="flex gap-4">
-            <button onclick="toggleView('login-view')" class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 hover:scale-105 transition active:scale-95 shadow-xl">MASUK PORTAL</button>
-            <button class="bg-white border-2 border-slate-200 px-10 py-4 rounded-2xl font-bold text-lg hover:border-indigo-600 transition">PELAJARI FITUR</button>
-        </div>
-    </div>
-
-    <div id="login-view" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hide items-center justify-center z-[100] p-4">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl relative page-transition">
-            <button onclick="toggleView('landing-view')" class="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
-            <h2 class="text-3xl font-extrabold mb-8">Authentication</h2>
+    <div id="login-view" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl text-center">
+            <h2 class="text-3xl font-black mb-6 italic text-indigo-600 underline">ULTRA-ACCESS.</h2>
             <div class="space-y-4">
-                <div class="text-left">
-                    <label class="text-xs font-bold text-slate-400 uppercase ml-2">Email Address</label>
-                    <input type="email" id="email" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-indigo-500 transition" placeholder="admin@web.id">
-                </div>
-                <div class="text-left">
-                    <label class="text-xs font-bold text-slate-400 uppercase ml-2">Secret Password</label>
-                    <input type="password" id="password" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-indigo-500 transition" placeholder="••••••••">
-                </div>
-                <button onclick="authAction()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-lg shadow-lg hover:bg-indigo-700 active:scale-95 transition">LOGIN MASTER</button>
-                <p class="text-[10px] text-slate-400">Gunakan email: <b>admin@web.id</b> & pass: <b>123</b></p>
+                <input type="email" id="email" placeholder="Admin Email" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500">
+                <input type="password" id="password" placeholder="Password" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500">
+                <button onclick="authAction()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition active:scale-95">MASUK SISTEM</button>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Default: admin@web.id | 123</p>
             </div>
         </div>
     </div>
 
     <div id="dashboard-view" class="hide min-h-screen">
-        <aside class="fixed left-0 top-0 h-screen w-72 bg-white border-r border-slate-100 z-50 p-6">
-            <div class="text-2xl font-black tracking-tighter text-indigo-600 mb-10 italic">ERP-MASTER.</div>
+        <aside class="fixed left-0 top-0 h-screen w-72 bg-white border-r z-50 p-6 shadow-sm">
+            <div class="text-2xl font-black text-indigo-600 mb-10 tracking-tighter">SMART<span class="text-slate-900">ERP.</span></div>
             <nav class="space-y-2">
-                <button onclick="switchPage('home')" id="nav-home" class="sidebar-btn active w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition"><i class="fas fa-home"></i> Dashboard</button>
-                <button onclick="switchPage('murid')" id="nav-murid" class="sidebar-btn w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition"><i class="fas fa-user-graduate"></i> Master Murid</button>
-                <button onclick="switchPage('broadcast')" id="nav-broadcast" class="sidebar-btn w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition"><i class="fas fa-bullhorn"></i> Broadcast</button>
-                <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 mt-20 transition"><i class="fas fa-power-off"></i> Keluar</button>
+                <button onclick="switchModule('dashboard')" id="nav-dashboard" class="sidebar-btn active w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition"><i class="fas fa-home"></i> Statistik</button>
+                <button onclick="switchModule('users')" id="nav-users" class="sidebar-btn w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition"><i class="fas fa-user-shield"></i> Manajemen User</button>
+                <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 mt-20 transition"><i class="fas fa-power-off"></i> Logout</button>
             </nav>
         </aside>
 
         <main class="ml-72 p-10">
             <header class="flex justify-between items-center mb-10">
                 <div>
-                    <h2 id="page-title" class="text-4xl font-extrabold text-slate-900">Console</h2>
-                    <p id="page-subtitle" class="text-slate-500 font-medium">Monitoring sistem real-time</p>
+                    <h2 id="view-title" class="text-4xl font-black text-slate-900">Dashboard</h2>
+                    <p class="text-slate-400 font-medium">Sistem Kendali Master Admin</p>
                 </div>
-                <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full border shadow-sm">
-                    <img src="https://ui-avatars.com/api/?name=Admin+Web&background=6366f1&color=fff" class="w-12 h-12 rounded-full">
-                    <div>
-                        <p class="text-sm font-black">Zidane Admin</p>
-                        <p class="text-[10px] font-bold text-indigo-500 uppercase">Super Admin Web</p>
-                    </div>
+                
+                <div class="flex items-center gap-4">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Filter Kelas:</label>
+                    <select id="class-filter" onchange="filterDataByClass()" class="p-3 bg-white border rounded-xl font-bold text-indigo-600 outline-none">
+                        <option value="ALL">Semua Kelas</option>
+                        <option value="XII-RPL-1">XII RPL 1</option>
+                        <option value="XII-RPL-2">XII RPL 2</option>
+                        <option value="XI-TKJ">XI TKJ</option>
+                    </select>
                 </div>
             </header>
 
-            <div id="content-area" class="page-transition">
+            <div id="main-content" class="page-transition">
                 </div>
         </main>
     </div>
 
-    <div id="form-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hide items-center justify-center z-[110] p-4">
-        <div class="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl page-transition">
-            <h3 id="form-title" class="text-2xl font-black mb-6">Tambah Murid Baru</h3>
-            <div class="space-y-4">
+    <div id="form-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hide items-center justify-center z-[110] p-4">
+        <div class="bg-white w-full max-w-xl rounded-[2.5rem] p-10 shadow-2xl">
+            <h3 id="form-title" class="text-2xl font-black mb-6">Tambah User Baru</h3>
+            <div class="grid grid-cols-2 gap-4">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="m-nama" placeholder="Nama Lengkap" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500">
-                <input type="text" id="m-nis" placeholder="Nomor Induk Siswa" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500">
-                <select id="m-kelas" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                    <option value="XII-RPL 1">XII-RPL 1</option>
-                    <option value="XII-RPL 2">XII-RPL 2</option>
-                    <option value="XI-TKJ">XI-TKJ</option>
-                </select>
-                <div class="flex gap-4 pt-4">
-                    <button onclick="saveStudent()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg">SIMPAN DATA</button>
-                    <button onclick="closeModal('form-modal')" class="flex-1 bg-slate-100 py-4 rounded-2xl font-bold">BATAL</button>
+                <div class="col-span-2">
+                    <label class="text-xs font-bold text-slate-400 ml-2">Nama Lengkap</label>
+                    <input type="text" id="m-nama" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-indigo-500" placeholder="Contoh: Zidane Abdi">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 ml-2">Pilih Role</label>
+                    <select id="m-role" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                        <option value="Murid">Murid</option>
+                        <option value="Guru">Guru</option>
+                        <option value="Wali Kelas">Wali Kelas</option>
+                        <option value="Ketua Kelas">Ketua Kelas</option>
+                        <option value="Sekretaris">Sekretaris</option>
+                        <option value="Bendahara">Bendahara</option>
+                        <option value="Kebersihan">Kebersihan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 ml-2">Penempatan Kelas</label>
+                    <select id="m-kelas" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                        <option value="XII-RPL-1">XII RPL 1</option>
+                        <option value="XII-RPL-2">XII RPL 2</option>
+                        <option value="XI-TKJ">XI TKJ</option>
+                    </select>
+                </div>
+                <div class="col-span-2 flex gap-4 mt-6">
+                    <button onclick="saveUser()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition">SIMPAN DATA</button>
+                    <button onclick="closeModal()" class="flex-1 bg-slate-100 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">BATAL</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA STATE (Simulasi Database dalam Variabel) ---
-        let students = [
-            { id: 1, nama: "Zidane Abdi", nis: "1001", kelas: "XII-RPL 1" },
-            { id: 2, nama: "Aisyah Putri", nis: "1002", kelas: "XII-RPL 2" }
+        // --- DATA STATE ---
+        let users = [
+            { id: 1, nama: "Zidane Master", role: "Wali Kelas", kelas: "XII-RPL-1" },
+            { id: 2, nama: "Ahmad Murid", role: "Murid", kelas: "XII-RPL-1" },
+            { id: 3, nama: "Siti Guru", role: "Guru", kelas: "XII-RPL-2" },
+            { id: 4, nama: "Budi Kebersihan", role: "Kebersihan", kelas: "XII-RPL-2" }
         ];
 
-        // --- CORE NAVIGATION ---
-        function toggleView(viewId) {
-            document.getElementById('landing-view').classList.add('hide');
-            document.getElementById('login-view').classList.add('hide');
-            document.getElementById('dashboard-view').classList.add('hide');
-            document.getElementById(viewId).classList.remove('hide');
-            if(viewId === 'login-view') document.getElementById(viewId).classList.add('flex');
+        let currentFilter = "ALL";
+
+        // --- AUTH & VIEW CONTROLLER ---
+        function authAction() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            if(email === 'admin@web.id' && pass === '123') {
+                document.getElementById('login-view').classList.add('hide');
+                document.getElementById('dashboard-view').classList.remove('hide');
+                switchModule('dashboard');
+            } else { alert("Akses Ditolak!"); }
         }
 
-        function switchPage(pageId) {
-            const content = document.getElementById('content-area');
-            const title = document.getElementById('page-title');
+        function switchModule(modId) {
+            const content = document.getElementById('main-content');
+            const title = document.getElementById('view-title');
             
-            // Update Sidebar UI
-            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active', 'text-white'));
-            document.getElementById(`nav-${pageId}`).classList.add('active');
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`nav-${modId}`).classList.add('active');
 
-            content.classList.remove('page-transition');
-            void content.offsetWidth; // Reset animasi
-            content.classList.add('page-transition');
-
-            if (pageId === 'home') {
-                title.innerText = "Sistem Overview";
+            if(modId === 'dashboard') {
+                title.innerText = "Dashboard Utama";
                 content.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="glass p-8 rounded-[2.5rem] shadow-sm hover-card">
-                            <p class="text-xs font-bold text-slate-400 uppercase">Total Murid</p>
-                            <h4 class="text-5xl font-black text-indigo-600 mt-2">${students.length}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl">
+                            <p class="text-xs font-bold opacity-70 uppercase">Total User</p>
+                            <h4 class="text-5xl font-black mt-2">${users.length}</h4>
                         </div>
-                        <div class="glass p-8 rounded-[2.5rem] shadow-sm hover-card">
-                            <p class="text-xs font-bold text-slate-400 uppercase">Server Status</p>
-                            <h4 class="text-5xl font-black text-emerald-500 mt-2">ACTIVE</h4>
+                        <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                            <p class="text-xs font-bold text-slate-400 uppercase">Guru Aktif</p>
+                            <h4 class="text-5xl font-black text-slate-900 mt-2">${users.filter(u => u.role === 'Guru' || u.role === 'Wali Kelas').length}</h4>
+                        </div>
+                        <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm">
+                            <p class="text-xs font-bold text-slate-400 uppercase">Murid Terdata</p>
+                            <h4 class="text-5xl font-black text-slate-900 mt-2">${users.filter(u => u.role !== 'Guru' && u.role !== 'Wali Kelas').length}</h4>
                         </div>
                     </div>
                 `;
-            } else if (pageId === 'murid') {
-                title.innerText = "Master Data Murid";
-                content.innerHTML = `
-                    <div class="flex justify-between items-center mb-8">
-                        <button onclick="openForm()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-indigo-700 transition">+ MURID BARU</button>
-                    </div>
-                    <div class="bg-white rounded-[2.5rem] shadow-xl border overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-50 border-b">
-                                <tr class="text-[10px] font-black uppercase text-slate-400">
-                                    <th class="p-6">Nama Lengkap</th><th class="p-6">NIS</th><th class="p-6">Kelas</th><th class="p-6 text-center">Aksi Master</th>
-                                </tr>
-                            </thead>
-                            <tbody id="student-table" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-                `;
-                renderTable();
-            } else if (pageId === 'broadcast') {
-                title.innerText = "Broadcast System";
-                content.innerHTML = `
-                    <div class="max-w-2xl bg-white p-10 rounded-[2.5rem] shadow-xl border">
-                        <h4 class="text-xl font-bold mb-6">Kirim Pesan ke Seluruh Murid</h4>
-                        <textarea id="broadcast-msg" class="w-full p-6 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-500 h-40" placeholder="Ketik pengumuman di sini..."></textarea>
-                        <button onclick="sendBroadcast()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black mt-6 shadow-xl active:scale-95 transition italic">BLAST MESSAGE NOW!</button>
-                    </div>
-                `;
+            } else if(modId === 'users') {
+                title.innerText = "Manajemen User & Role";
+                renderUserList();
             }
         }
 
-        // --- CRUD LOGIC ---
-        function renderTable() {
-            const table = document.getElementById('student-table');
-            table.innerHTML = students.map(s => `
-                <tr class="hover:bg-slate-50/80 transition">
-                    <td class="p-6 font-bold text-slate-800">${s.nama}</td>
-                    <td class="p-6 text-slate-400 font-mono text-sm">${s.nis}</td>
-                    <td class="p-6"><span class="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full text-[10px] font-black uppercase">${s.kelas}</span></td>
-                    <td class="p-6 flex justify-center gap-2">
-                        <button onclick="openForm(${s.id})" class="p-3 text-blue-500 hover:bg-blue-50 rounded-xl"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteStudent(${s.id})" class="p-3 text-red-500 hover:bg-red-50 rounded-xl"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+        // --- USER LIST & FILTERING ---
+        function filterDataByClass() {
+            currentFilter = document.getElementById('class-filter').value;
+            if(document.getElementById('nav-users').classList.contains('active')) {
+                renderUserList();
+            }
         }
 
+        function renderUserList() {
+            const content = document.getElementById('main-content');
+            const filteredData = currentFilter === 'ALL' ? users : users.filter(u => u.kelas === currentFilter);
+
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl font-bold">Daftar Anggota: <span class="text-indigo-600">${currentFilter}</span></h3>
+                    <button onclick="openForm()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition">+ TAMBAH USER</button>
+                </div>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b">
+                            <tr class="text-[10px] font-black uppercase text-slate-400">
+                                <th class="p-6">Nama Lengkap</th><th class="p-6">Role</th><th class="p-6">Kelas</th><th class="p-6 text-center">Aksi Master</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            ${filteredData.map(u => `
+                                <tr class="hover:bg-slate-50/80 transition">
+                                    <td class="p-6">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-bold text-indigo-600">${u.nama[0]}</div>
+                                            <span class="font-bold text-slate-800">${u.nama}</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-6">${getRoleBadge(u.role)}</td>
+                                    <td class="p-6 text-slate-500 font-bold text-sm">${u.kelas}</td>
+                                    <td class="p-6 flex justify-center gap-2">
+                                        <button onclick="openForm(${u.id})" class="p-3 text-blue-500 hover:bg-blue-50 rounded-xl"><i class="fas fa-edit"></i></button>
+                                        <button onclick="deleteUser(${u.id})" class="p-3 text-red-500 hover:bg-red-50 rounded-xl"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function getRoleBadge(role) {
+            const colors = {
+                'Guru': 'bg-red-100 text-red-600',
+                'Wali Kelas': 'bg-purple-100 text-purple-600',
+                'Murid': 'bg-blue-100 text-blue-600',
+                'Ketua Kelas': 'bg-amber-100 text-amber-600',
+                'Sekretaris': 'bg-emerald-100 text-emerald-600',
+                'Bendahara': 'bg-pink-100 text-pink-600',
+                'Kebersihan': 'bg-slate-100 text-slate-600'
+            };
+            return `<span class="${colors[role] || 'bg-gray-100 text-gray-600'} px-4 py-1 rounded-full text-[10px] font-black uppercase">${role}</span>`;
+        }
+
+        // --- FORM CRUD ACTIONS ---
         function openForm(id = null) {
             document.getElementById('form-modal').classList.remove('hide');
             document.getElementById('form-modal').classList.add('flex');
             
             if(id) {
-                const s = students.find(x => x.id === id);
-                document.getElementById('form-title').innerText = "Edit Data Murid";
-                document.getElementById('edit-id').value = s.id;
-                document.getElementById('m-nama').value = s.nama;
-                document.getElementById('m-nis').value = s.nis;
-                document.getElementById('m-kelas').value = s.kelas;
+                const u = users.find(x => x.id === id);
+                document.getElementById('form-title').innerText = "Edit Data User";
+                document.getElementById('edit-id').value = u.id;
+                document.getElementById('m-nama').value = u.nama;
+                document.getElementById('m-role').value = u.role;
+                document.getElementById('m-kelas').value = u.kelas;
             } else {
-                document.getElementById('form-title').innerText = "Tambah Murid Baru";
+                document.getElementById('form-title').innerText = "Tambah User Baru";
                 document.getElementById('edit-id').value = "";
                 document.getElementById('m-nama').value = "";
-                document.getElementById('m-nis').value = "";
+                // Default kelas ke filter aktif jika ada
+                if(currentFilter !== 'ALL') document.getElementById('m-kelas').value = currentFilter;
             }
         }
 
-        function saveStudent() {
+        function saveUser() {
             const id = document.getElementById('edit-id').value;
             const nama = document.getElementById('m-nama').value;
-            const nis = document.getElementById('m-nis').value;
+            const role = document.getElementById('m-role').value;
             const kelas = document.getElementById('m-kelas').value;
 
+            if(!nama) return alert("Nama harus diisi!");
+
             if(id) {
-                const index = students.findIndex(x => x.id == id);
-                students[index] = { id: parseInt(id), nama, nis, kelas };
+                const index = users.findIndex(x => x.id == id);
+                users[index] = { id: parseInt(id), nama, role, kelas };
             } else {
-                students.push({ id: Date.now(), nama, nis, kelas });
+                users.push({ id: Date.now(), nama, role, kelas });
             }
             
-            closeModal('form-modal');
-            switchPage('murid');
+            closeModal();
+            renderUserList();
         }
 
-        function deleteStudent(id) {
-            if(confirm("Yakin hapus murid ini?")) {
-                students = students.filter(x => x.id !== id);
-                switchPage('murid');
+        function deleteUser(id) {
+            if(confirm("Hapus user ini?")) {
+                users = users.filter(u => u.id !== id);
+                renderUserList();
             }
         }
 
-        function sendBroadcast() {
-            const msg = document.getElementById('broadcast-msg').value;
-            if(!msg) return alert("Pesan kosong!");
-            alert("✅ Pesan terkirim ke " + students.length + " murid melalui System Push!");
-            document.getElementById('broadcast-msg').value = "";
-        }
-
-        function closeModal(id) { document.getElementById(id).classList.add('hide'); }
-
-        // --- AUTH ACTION ---
-        function authAction() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if(email === 'admin@web.id' && pass === '123') {
-                toggleView('dashboard-view');
-                switchPage('home');
-            } else {
-                alert("Login Gagal!");
-            }
-        }
-
+        function closeModal() { document.getElementById('form-modal').classList.add('hide'); }
         function logout() { location.reload(); }
     </script>
 </body>
