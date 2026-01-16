@@ -13,23 +13,17 @@
         .sidebar-link.active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-200; }
         .bg-main { background: radial-gradient(circle at top right, #4f46e5, #1e1b4b); }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        select { cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="view-landing" class="min-h-screen bg-main flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden">
         <div class="absolute top-0 left-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
-        
         <div class="relative z-10">
-            <div class="mb-6 glass px-6 py-2 rounded-full text-[10px] font-black tracking-[0.3em] inline-block uppercase">
-                Official School Platform
-            </div>
-            <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter mb-6 leading-none">
-                SMART<span class="text-indigo-400">ERP.</span>
-            </h1>
-            <p class="max-w-xl text-indigo-100/60 font-bold mb-12 text-sm md:text-base uppercase tracking-[0.2em] leading-relaxed mx-auto">
-                Sistem Manajemen Terpadu <br> Rekayasa Perangkat Lunak 1
-            </p>
+            <div class="mb-6 glass px-6 py-2 rounded-full text-[10px] font-black tracking-[0.3em] inline-block uppercase">Official School Platform</div>
+            <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter mb-6 leading-none">SMART<span class="text-indigo-400">ERP.</span></h1>
+            <p class="max-w-xl text-indigo-100/60 font-bold mb-12 text-sm uppercase tracking-[0.2em] leading-relaxed mx-auto">Sistem Manajemen Terpadu <br> Rekayasa Perangkat Lunak 1</p>
             <button onclick="goToLogin()" class="group bg-white text-slate-900 px-12 py-5 rounded-[2.5rem] font-black hover:scale-105 transition-all shadow-2xl flex items-center gap-3 mx-auto">
                 MASUK KE SISTEM <i class="fas fa-chevron-right text-xs group-hover:translate-x-2 transition"></i>
             </button>
@@ -38,30 +32,34 @@
 
     <div id="view-login" class="hide fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-xl p-4">
         <div class="bg-white p-12 rounded-[4rem] w-full max-w-md shadow-2xl text-center relative">
-            <h2 class="text-3xl font-black text-slate-900 mb-2 italic">AKSES AKUN.</h2>
-            <p class="text-slate-400 text-[10px] font-black uppercase mb-10 tracking-[0.2em]">Lengkapi data untuk masuk</p>
+            <h2 class="text-3xl font-black text-slate-900 mb-2 italic uppercase">Welcome Back.</h2>
+            <p class="text-slate-400 text-[10px] font-black uppercase mb-10 tracking-[0.2em]">Pilih akses akun anda</p>
             
             <div class="space-y-5 text-left">
                 <div class="relative">
-                    <label class="text-[10px] font-black ml-5 text-slate-400 uppercase mb-2 block tracking-widest">Nama Lengkap</label>
-                    <input type="text" id="input-nama" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold text-slate-800 border-2 border-transparent focus:border-indigo-500 transition" placeholder="Ketik nama anda...">
-                </div>
-
-                <div class="relative">
-                    <label class="text-[10px] font-black ml-5 text-slate-400 uppercase mb-2 block tracking-widest">Pilih Jabatan / Role</label>
-                    <select id="select-role" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold text-slate-800 border-2 border-transparent focus:border-indigo-500 transition appearance-none cursor-pointer">
+                    <label class="text-[10px] font-black ml-5 text-slate-400 uppercase mb-2 block tracking-widest">1. Pilih Jabatan / Role</label>
+                    <select id="select-role" onchange="updateNameList()" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold text-slate-800 border-2 border-transparent focus:border-indigo-500 transition appearance-none">
+                        <option value="" disabled selected>Pilih Role...</option>
                         <option value="Ketua Kelas">Ketua Kelas</option>
                         <option value="Wakil Ketua">Wakil Ketua</option>
                         <option value="Sekretaris">Sekretaris</option>
                         <option value="Bendahara">Bendahara</option>
-                        <option value="Murid">Murid XII RPL 1</option>
-                        <option value="Admin">Administrator</option>
+                        <option value="Murid">Murid Biasa</option>
+                        <option value="Admin">Master Admin</option>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-6 bottom-6 text-slate-400 pointer-events-none"></i>
+                </div>
+
+                <div class="relative">
+                    <label class="text-[10px] font-black ml-5 text-slate-400 uppercase mb-2 block tracking-widest">2. Pilih Nama Lengkap</label>
+                    <select id="select-nama" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold text-slate-800 border-2 border-transparent focus:border-indigo-500 transition appearance-none">
+                        <option value="" disabled selected>Pilih Nama...</option>
                     </select>
                     <i class="fas fa-chevron-down absolute right-6 bottom-6 text-slate-400 pointer-events-none"></i>
                 </div>
 
                 <button onclick="handleLogin()" class="w-full bg-indigo-600 text-white py-5 rounded-3xl font-black shadow-xl hover:bg-indigo-700 transition active:scale-95 mt-4 uppercase tracking-widest">
-                    Konfirmasi Akses
+                    MASUK KE DASHBOARD
                 </button>
             </div>
         </div>
@@ -71,29 +69,21 @@
         <aside class="w-72 bg-white border-r p-8 fixed h-full flex flex-col z-50 shadow-sm">
             <h2 class="text-2xl font-black text-indigo-600 italic mb-12 tracking-tighter">SMARTERP.</h2>
             <nav class="space-y-4 flex-1">
-                <button onclick="showContent('dash')" id="btn-dash" class="sidebar-link active w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-th-large w-8 text-sm"></i> Dashboard
-                </button>
-                <button onclick="showContent('siswa')" id="btn-siswa" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-users w-8 text-sm"></i> Data Siswa
-                </button>
-                <button onclick="showContent('absen')" id="btn-absen" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-check-circle w-8 text-sm"></i> Presensi
-                </button>
+                <button onclick="showContent('dash')" id="btn-dash" class="sidebar-link active w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition"><i class="fas fa-th-large w-8 text-sm"></i> Dashboard</button>
+                <button onclick="showContent('siswa')" id="btn-siswa" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition"><i class="fas fa-users w-8 text-sm"></i> Data Siswa</button>
+                <button onclick="showContent('absen')" id="btn-absen" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition"><i class="fas fa-check-circle w-8 text-sm"></i> Presensi</button>
             </nav>
-            <button onclick="location.reload()" class="p-5 text-red-500 font-black flex items-center gap-3 hover:bg-red-50 rounded-2xl transition mt-auto">
-                <i class="fas fa-power-off"></i> KELUAR
-            </button>
+            <button onclick="location.reload()" class="p-5 text-red-500 font-black flex items-center gap-3 hover:bg-red-50 rounded-2xl transition mt-auto"><i class="fas fa-power-off"></i> KELUAR</button>
         </aside>
 
-        <main class="ml-72 p-12 w-full">
+        <main class="ml-72 p-12 w-full text-slate-800">
             <header class="flex justify-between items-center mb-12">
-                <h2 id="page-title" class="text-4xl font-black text-slate-800 tracking-tighter">Dashboard</h2>
+                <h2 id="page-title" class="text-4xl font-black tracking-tighter">Dashboard</h2>
                 <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full border shadow-sm">
                     <div id="u-initial" class="w-11 h-11 bg-indigo-600 rounded-full flex items-center justify-center text-white font-black uppercase shadow-lg shadow-indigo-100">?</div>
                     <div>
-                        <p id="u-name" class="text-[11px] font-black text-slate-800 leading-none mb-1 uppercase tracking-tight">User Name</p>
-                        <p id="u-role" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic text-indigo-500">Role</p>
+                        <p id="u-name" class="text-[11px] font-black leading-none mb-1 uppercase tracking-tight">Nama User</p>
+                        <p id="u-role" class="text-[9px] font-bold text-indigo-500 uppercase tracking-widest italic">Jabatan</p>
                     </div>
                 </div>
             </header>
@@ -101,29 +91,24 @@
             <section id="section-dash" class="page-content">
                 <div id="dash-pengurus" class="hide space-y-6">
                     <div class="grid grid-cols-2 gap-8">
-                        <div class="bg-indigo-600 p-12 rounded-[3.5rem] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
+                        <div class="bg-indigo-600 p-12 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
                             <i class="fas fa-users absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
                             <p class="text-[10px] font-black opacity-60 uppercase tracking-[0.2em] mb-4">Statistik Kelas</p>
                             <h3 class="text-7xl font-black tracking-tighter">34</h3>
-                            <p class="mt-4 font-bold text-indigo-200">Total Siswa Terdaftar</p>
+                            <p class="mt-4 font-bold text-indigo-200">Total Siswa XII RPL 1</p>
                         </div>
-                        <div onclick="showContent('absen')" class="bg-white border-2 border-slate-100 p-12 rounded-[3.5rem] flex flex-col justify-center items-center text-center cursor-pointer hover:bg-indigo-50 transition-all duration-300 group">
-                            <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                                <i class="fas fa-calendar-check text-indigo-600 text-2xl"></i>
-                            </div>
+                        <div onclick="showContent('absen')" class="bg-white border-2 border-slate-100 p-12 rounded-[3.5rem] flex flex-col justify-center items-center text-center cursor-pointer hover:bg-indigo-50 transition-all duration-300">
+                            <i class="fas fa-calendar-check text-indigo-600 text-3xl mb-4"></i>
                             <span class="font-black text-indigo-600 tracking-widest text-xs uppercase">Kelola Presensi</span>
                         </div>
                     </div>
                 </div>
-
                 <div id="dash-umum" class="hide">
                     <div class="bg-white p-16 rounded-[4rem] border shadow-sm flex items-center gap-12">
                         <div class="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center text-5xl">👋</div>
                         <div>
-                            <h3 class="text-4xl font-black text-slate-800 tracking-tighter mb-2">Sistem Aktif.</h3>
-                            <p class="text-slate-400 font-bold uppercase tracking-[0.2em] text-xs leading-relaxed">
-                                Selamat datang di portal informasi <br> Rekayasa Perangkat Lunak 1.
-                            </p>
+                            <h3 class="text-4xl font-black tracking-tighter mb-2">Akses Terverifikasi.</h3>
+                            <p class="text-slate-400 font-bold uppercase tracking-[0.2em] text-xs">Selamat datang di portal informasi akademik XII RPL 1.</p>
                         </div>
                     </div>
                 </div>
@@ -140,33 +125,58 @@
     </div>
 
     <script>
-        const DATA_SISWA = [
-            "A Fabian Syah", "Achmad Wildan", "Ahmad Alfi", "Ahmad Azriel", "Andrea Hafshah", 
-            "Attaya Kayla", "Cahyo Kartiko", "Karina Sakila", "Kevin Oktavian", "Khaysila", 
-            "M. Naufal Permana", "M. Refi Yanto", "M. Reza Febriansyah", "M. Rizky FG", 
-            "M. Rizky Mulya", "M. Rizqi Mubarak", "M. Sigit Maulana", "M. Tegar Alyasin", 
-            "Moch Farel Al Khairy", "Muhamad Daffa", "Muhamad Raffi", "Muhammad Ridwan", 
-            "Raehan Syafa", "Raffa", "Rafi Izatul", "Rahil Aristya", "Rama", 
-            "Ranie Dwi Putri", "Reno Yoga Pratama", "Syakirah Azraa", "Three Argha", 
-            "Vino Pratama", "Vino Sigit H", "Zainal Arifin"
-        ];
+        // DATA MASTER
+        const DATA_KELAS = {
+            "Ketua Kelas": ["Cahyo Kartiko"],
+            "Wakil Ketua": ["Reno Yoga Pratama"],
+            "Sekretaris": ["Ahmad Azriel"],
+            "Bendahara": ["Khaysila"],
+            "Admin": ["Super Administrator"],
+            "Murid": [
+                "A Fabian Syah", "Achmad Wildan", "Ahmad Alfi", "Andrea Hafshah", 
+                "Attaya Kayla", "Karina Sakila", "Kevin Oktavian", "M. Naufal Permana", 
+                "M. Refi Yanto", "M. Reza Febriansyah", "M. Rizky FG", "M. Rizky Mulya", 
+                "M. Rizqi Mubarak", "M. Sigit Maulana", "M. Tegar Alyasin", "Moch Farel Al Khairy", 
+                "Muhamad Daffa", "Muhamad Raffi", "Muhammad Ridwan", "Raehan Syafa", "Raffa", 
+                "Rafi Izatul", "Rahil Aristya", "Rama", "Ranie Dwi Putri", "Syakirah Azraa", 
+                "Three Argha", "Vino Pratama", "Vino Sigit H", "Zainal Arifin"
+            ]
+        };
+
+        // Semua siswa untuk list data
+        const SEMUA_SISWA = [...DATA_KELAS["Ketua Kelas"], ...DATA_KELAS["Wakil Ketua"], ...DATA_KELAS["Sekretaris"], ...DATA_KELAS["Bendahara"], ...DATA_KELAS["Murid"]].sort();
 
         function goToLogin() {
             document.getElementById('view-landing').classList.add('hide');
             document.getElementById('view-login').classList.remove('hide');
         }
 
-        function handleLogin() {
-            const nama = document.getElementById('input-nama').value.trim();
+        // FUNGSI UPDATE NAMA BERDASARKAN ROLE
+        function updateNameList() {
             const role = document.getElementById('select-role').value;
+            const nameSelect = document.getElementById('select-nama');
+            const names = DATA_KELAS[role] || [];
 
-            if (nama === "") {
-                alert("Silakan masukkan nama anda!");
+            nameSelect.innerHTML = '<option value="" disabled selected>Pilih Nama...</option>';
+            names.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                nameSelect.appendChild(opt);
+            });
+        }
+
+        function handleLogin() {
+            const role = document.getElementById('select-role').value;
+            const nama = document.getElementById('select-nama').value;
+
+            if (!role || !nama) {
+                alert("Harap pilih Role dan Nama terlebih dahulu!");
                 return;
             }
 
-            localStorage.setItem('userName', nama);
-            localStorage.setItem('userRole', role);
+            localStorage.setItem('uName', nama);
+            localStorage.setItem('uRole', role);
 
             document.getElementById('view-login').classList.add('hide');
             document.getElementById('view-app').classList.remove('hide');
@@ -174,7 +184,6 @@
             document.getElementById('u-name').innerText = nama;
             document.getElementById('u-role').innerText = role;
             document.getElementById('u-initial').innerText = nama.charAt(0);
-
             showContent('dash');
         }
 
@@ -186,32 +195,29 @@
             document.getElementById('page-title').innerText = page.charAt(0).toUpperCase() + page.slice(1);
 
             if(page === 'dash') {
-                const role = localStorage.getItem('userRole');
-                const isPengurus = ["Ketua Kelas", "Wakil Ketua", "Admin"].includes(role);
-                document.getElementById('dash-pengurus').classList.toggle('hide', !isPengurus);
-                document.getElementById('dash-umum').classList.toggle('hide', isPengurus);
+                const role = localStorage.getItem('uRole');
+                const isP = ["Ketua Kelas", "Wakil Ketua", "Admin"].includes(role);
+                document.getElementById('dash-pengurus').classList.toggle('hide', !isP);
+                document.getElementById('dash-umum').classList.toggle('hide', isP);
             }
 
             if(page === 'siswa') {
-                document.getElementById('siswa-grid').innerHTML = DATA_SISWA.map(name => `
-                    <div class="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm hover:border-indigo-500 transition-all duration-300 group">
+                document.getElementById('siswa-grid').innerHTML = SEMUA_SISWA.map(n => `
+                    <div class="bg-white p-7 rounded-[2.5rem] border shadow-sm group hover:border-indigo-500 transition">
                         <div class="w-10 h-1 bg-slate-100 mb-4 group-hover:bg-indigo-500 transition"></div>
-                        <h4 class="font-black text-slate-800 tracking-tight text-sm">${name}</h4>
-                        <p class="text-[9px] font-black text-slate-400 mt-2 uppercase tracking-widest italic">Verified Student</p>
-                    </div>
-                `).join('');
+                        <h4 class="font-black text-slate-800 text-sm">${n}</h4>
+                        <p class="text-[9px] font-black text-slate-400 mt-1 uppercase italic">XII RPL 1 Verified</p>
+                    </div>`).join('');
             }
 
             if(page === 'absen') {
-                const role = localStorage.getItem('userRole');
-                const isP = ["Ketua Kelas", "Wakil Ketua", "Admin"].includes(role);
-                document.getElementById('absen-list').innerHTML = DATA_SISWA.map(name => `
+                const isP = ["Ketua Kelas", "Wakil Ketua", "Admin"].includes(localStorage.getItem('uRole'));
+                document.getElementById('absen-list').innerHTML = SEMUA_SISWA.map(n => `
                     <div class="flex justify-between items-center border-b border-slate-50 py-5 last:border-0">
-                        <span class="font-black text-slate-700 text-sm tracking-tight">${name}</span>
+                        <span class="font-black text-slate-700 text-sm">${n}</span>
                         ${isP ? `<button onclick="this.innerText='✓ Terisi'; this.classList.add('bg-emerald-500')" class="bg-indigo-600 text-white px-6 py-2 rounded-2xl text-[9px] font-black tracking-widest transition-all">ABSEN</button>` : 
-                        `<span class="text-[9px] font-black text-slate-300 italic tracking-widest uppercase">READ ONLY</span>`}
-                    </div>
-                `).join('');
+                        `<span class="text-[9px] font-black text-slate-300 italic uppercase">Read Only</span>`}
+                    </div>`).join('');
             }
         }
     </script>
