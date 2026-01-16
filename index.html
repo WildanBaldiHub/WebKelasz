@@ -3,38 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMART ERP - XII RPL 2</title>
+    <title>XII RPL 2 - Ultimate Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; color: #1e293b; }
+        :root { --bg-main: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; }
+        .dark { --bg-main: #0f172a; --card-bg: #1e293b; --text-main: #f1f5f9; }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.3s ease; }
         .hide { display: none !important; }
-        .sidebar-link.active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-200 scale-105; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); }
-        .card-custom { @apply bg-white rounded-[2.5rem] border border-slate-200/60 shadow-sm transition-all duration-300; }
-        .card-custom:hover { @apply shadow-xl shadow-slate-200 -translate-y-1; }
-        .chat-box { height: 400px; overflow-y: auto; display: flex; flex-direction: column-reverse; }
-        .status-btn { @apply w-8 h-8 rounded-xl text-[10px] font-black transition-all flex items-center justify-center border; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .sidebar-link.active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-500/30 scale-105; }
+        .bento-card { background: var(--card-bg); @apply rounded-[2rem] border border-slate-200/50 shadow-sm p-6 transition-all duration-300; }
+        .bento-card:hover { @apply shadow-2xl shadow-indigo-500/10 -translate-y-1 border-indigo-200; }
+        .chat-area { height: calc(100vh - 300px); overflow-y: auto; display: flex; flex-direction: column-reverse; }
+        .status-dot { @apply w-3 h-3 rounded-full inline-block mr-2; }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-    <div id="view-landing" class="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-white overflow-hidden">
-        <div class="absolute w-[500px] h-[500px] bg-indigo-600 rounded-full blur-[150px] -top-40 -left-40 opacity-20 animate-pulse"></div>
-        <h1 class="animate__animated animate__backInDown text-7xl md:text-9xl font-extrabold italic tracking-tighter mb-4">RPL<span class="text-indigo-500">TWO.</span></h1>
-        <p class="animate__animated animate__fadeInUp animate__delay-1s text-slate-400 font-bold mb-10 uppercase tracking-[0.4em] text-[10px]">Cloud Based Class Management</p>
-        <button onclick="goToLogin()" class="animate__animated animate__zoomIn animate__delay-1s bg-indigo-600 text-white px-12 py-4 rounded-full font-black hover:bg-indigo-500 hover:scale-110 transition-all shadow-2xl shadow-indigo-500/40 uppercase tracking-widest text-xs">Enter System</button>
+    <div id="view-landing" class="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center text-white relative">
+        <div class="absolute w-[600px] h-[600px] bg-indigo-600 rounded-full blur-[180px] -top-40 -left-40 opacity-20 animate-pulse"></div>
+        <div class="absolute w-[600px] h-[600px] bg-purple-600 rounded-full blur-[180px] -bottom-40 -right-40 opacity-10 animate-pulse"></div>
+        
+        <div class="z-10 animate__animated animate__fadeIn">
+            <h1 class="text-8xl md:text-[10rem] font-black italic tracking-tighter leading-none mb-6">RPL<span class="text-indigo-500">2.</span></h1>
+            <div class="h-1 w-24 bg-indigo-500 mx-auto mb-8 rounded-full"></div>
+            <p class="text-slate-400 font-bold mb-12 uppercase tracking-[0.5em] text-xs">The Digital Command Center</p>
+            <button onclick="goToLogin()" class="bg-indigo-600 text-white px-16 py-5 rounded-full font-black hover:bg-white hover:text-indigo-900 hover:scale-110 transition-all shadow-2xl shadow-indigo-500/40 uppercase tracking-widest text-xs">Akses Sistem</button>
+        </div>
     </div>
 
-    <div id="view-login" class="hide fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-xl p-4">
-        <div class="animate__animated animate__zoomIn bg-white p-10 rounded-[3rem] w-full max-w-md">
-            <h2 class="text-2xl font-black text-slate-900 mb-8 text-center uppercase italic">Identify Yourself</h2>
+    <div id="view-login" class="hide fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/95 backdrop-blur-2xl p-4">
+        <div class="animate__animated animate__zoomIn bg-white p-10 rounded-[3.5rem] w-full max-w-md shadow-2xl text-slate-900">
+            <h2 class="text-3xl font-black mb-2 text-center italic tracking-tighter">WHO ARE YOU?</h2>
+            <p class="text-[10px] text-center font-bold text-slate-400 uppercase tracking-widest mb-10">Verification Required</p>
             <div class="space-y-4">
-                <select id="select-role" onchange="updateNameList()" class="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-indigo-500 appearance-none cursor-pointer">
+                <select id="select-role" onchange="updateNameList()" class="w-full p-5 bg-slate-50 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-indigo-500 transition-all appearance-none cursor-pointer">
                     <option value="" disabled selected>Pilih Jabatan...</option>
                     <option value="Guru">Guru Mata Pelajaran</option>
                     <option value="Ketua Kelas">Ketua Kelas</option>
@@ -42,99 +48,185 @@
                     <option value="Bendahara">Bendahara</option>
                     <option value="Murid">Siswa</option>
                 </select>
-                <select id="select-nama" class="w-full p-5 bg-slate-100 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-indigo-500 appearance-none cursor-pointer">
+                <select id="select-nama" class="w-full p-5 bg-slate-50 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-indigo-500 appearance-none cursor-pointer">
                     <option value="" disabled selected>Pilih Nama...</option>
                 </select>
-                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-indigo-600 transition-all active:scale-95 text-xs uppercase tracking-widest">Open Dashboard</button>
+                <button onclick="handleLogin()" class="w-full bg-indigo-600 text-white py-6 rounded-2xl font-black hover:bg-slate-900 transition-all active:scale-95 text-xs uppercase tracking-widest mt-4">Buka Dashboard</button>
             </div>
         </div>
     </div>
 
     <div id="view-app" class="hide min-h-screen flex">
-        <aside class="w-72 bg-white border-r border-slate-100 p-8 fixed h-full flex flex-col z-50">
-            <div class="mb-12">
-                <h2 class="text-2xl font-black text-slate-900 italic tracking-tighter">RPL<span class="text-indigo-600">TWO.</span></h2>
-                <div class="w-8 h-1 bg-indigo-600 mt-1 rounded-full"></div>
+        <aside class="w-80 bg-white border-r border-slate-100 p-8 fixed h-full flex flex-col z-50 dark:bg-slate-900 dark:border-slate-800">
+            <div class="mb-10 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-white italic tracking-tighter">RPL<span class="text-indigo-600">TWO.</span></h2>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ultimate Hub</p>
+                </div>
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
             
-            <nav id="sidebar-nav" class="space-y-2 flex-1 overflow-y-auto pr-2">
-                <button onclick="showContent('dash')" id="btn-dash" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-grid-2"></i> Dashboard</button>
-                <button onclick="showContent('chat')" id="btn-chat" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-comment-dots"></i> Forum Chat</button>
-                <button onclick="showContent('tugas')" id="btn-tugas" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-book-open"></i> Tugas</button>
-                <p class="pt-6 pb-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">Presensi</p>
-                <button onclick="showContent('absen-siswa')" id="btn-absen-siswa" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-users"></i> Siswa</button>
-                <button onclick="showContent('absen-guru')" id="btn-absen-guru" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-user-tie"></i> Guru</button>
-                <p class="pt-6 pb-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">Finance</p>
-                <button onclick="showContent('kas')" id="btn-kas" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-wallet"></i> Uang Kas</button>
+            <nav class="space-y-1 flex-1 overflow-y-auto pr-2 custom-scroll">
+                <button onclick="showContent('dash')" id="btn-dash" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-layer-group w-5"></i> Dashboard</button>
+                <button onclick="showContent('chat')" id="btn-chat" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-comments w-5"></i> Forum Chat</button>
+                <p class="pt-6 pb-2 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] ml-4">Akademik</p>
+                <button onclick="showContent('tugas')" id="btn-tugas" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-scroll w-5"></i> Tugas & Proyek</button>
+                <button onclick="showContent('materi')" id="btn-materi" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-cloud-arrow-down w-5"></i> Library Materi</button>
+                <p class="pt-6 pb-2 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] ml-4">Manajemen</p>
+                <button onclick="showContent('absen-siswa')" id="btn-absen-siswa" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-user-check w-5"></i> Absen Siswa</button>
+                <button onclick="showContent('absen-guru')" id="btn-absen-guru" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-chalkboard-user w-5"></i> Absen Guru</button>
+                <button onclick="showContent('kas')" id="btn-kas" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-vault w-5"></i> Uang Kas</button>
+                <p class="pt-6 pb-2 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] ml-4">Lainnya</p>
+                <button onclick="showContent('voting')" id="btn-voting" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-vote-yea w-5"></i> Polling/Voting</button>
+                <button onclick="showContent('piket')" id="btn-piket" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center transition-all text-sm gap-4"><i class="fas fa-broom w-5"></i> Jadwal Piket</button>
             </nav>
 
-            <button onclick="logout()" class="p-4 mt-4 bg-slate-50 text-slate-400 rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest"><i class="fas fa-power-off"></i> Logout</button>
+            <button onclick="logout()" class="p-5 mt-6 bg-red-50 text-red-500 rounded-2xl font-black text-[10px] flex items-center justify-center gap-3 hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest"><i class="fas fa-power-off"></i> Sign Out</button>
         </aside>
 
-        <main class="ml-72 p-12 w-full">
-            <header class="flex justify-between items-center mb-12 animate__animated animate__fadeIn">
-                <div>
-                    <h2 id="page-title" class="text-4xl font-black tracking-tighter text-slate-900 uppercase italic">Dashboard</h2>
-                    <p class="text-xs font-bold text-indigo-500 mt-1 uppercase tracking-widest" id="current-date"></p>
+        <main class="ml-80 p-12 w-full min-h-screen">
+            <header class="flex justify-between items-center mb-10 animate__animated animate__fadeIn">
+                <div class="bg-indigo-600/5 px-6 py-2 rounded-full border border-indigo-600/10">
+                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]" id="current-date"></p>
                 </div>
-                <div class="flex items-center gap-4 glass py-2 px-6 rounded-full">
-                    <div id="u-initial" class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white font-black text-lg">?</div>
-                    <div>
-                        <p id="u-name" class="text-[11px] font-black text-slate-900 leading-none">User Name</p>
-                        <p id="u-role" class="text-[8px] font-bold text-indigo-500 uppercase tracking-[0.2em] mt-1">Role</p>
+                <div class="flex items-center gap-6">
+                    <div class="text-right">
+                        <p id="u-name" class="text-sm font-black text-slate-900 dark:text-white leading-none">Name</p>
+                        <p id="u-role" class="text-[9px] font-bold text-indigo-500 uppercase mt-1 tracking-widest">Role</p>
                     </div>
+                    <div id="u-initial" class="w-14 h-14 bg-indigo-600 text-white rounded-[1.5rem] flex items-center justify-center font-black text-xl shadow-xl shadow-indigo-200">?</div>
                 </div>
             </header>
 
+            <div class="mb-8 bg-indigo-600 text-white py-3 rounded-2xl overflow-hidden relative">
+                <div class="whitespace-nowrap animate-marquee flex items-center gap-10 font-bold text-xs uppercase tracking-widest">
+                    <span>INFO: Tugas Produktif RPL dikumpulkan hari ini jam 23.59!</span>
+                    <span>INFO: Besok memakai seragam Pramuka Lengkap!</span>
+                    <span>INFO: Bayar Uang Kas Ke Khaysila sebelum istirahat!</span>
+                </div>
+            </div>
+
             <div id="content-area">
-                <section id="section-dash" class="page-content hide grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card-custom p-10 bg-indigo-600 text-white col-span-2 relative overflow-hidden border-0">
-                        <i class="fas fa-shield-check absolute -right-10 -bottom-10 text-[15rem] opacity-10"></i>
-                        <h3 class="text-4xl font-black mb-2 tracking-tighter italic">Live Sync Active.</h3>
-                        <p class="text-indigo-100 font-bold opacity-70 text-sm max-w-md">Sistem Cloud XII RPL 2 terhubung. Data absensi dan tugas diperbarui secara otomatis tanpa refresh.</p>
+                <section id="section-dash" class="page-content hide grid grid-cols-1 md:grid-cols-4 gap-6 animate__animated animate__fadeIn">
+                    <div class="bento-card col-span-2 bg-slate-900 text-white flex flex-col justify-between p-10 relative overflow-hidden">
+                        <i class="fas fa-rocket absolute -right-10 -bottom-10 text-[15rem] opacity-10"></i>
+                        <h3 class="text-5xl font-black italic tracking-tighter leading-none mb-4">Hello,<br><span id="dash-user" class="text-indigo-400">User</span></h3>
+                        <p class="text-slate-400 font-bold text-xs">Ready to dominate RPL 2 today? Semangat belajarnya!</p>
                     </div>
-                    <div class="card-custom p-10 flex flex-col justify-center">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Total Kas Kelas</p>
-                        <h3 id="total-kas-display" class="text-4xl font-black text-slate-900 tracking-tighter">Rp 0</h3>
+                    <div class="bento-card bg-indigo-50 border-indigo-100 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-indigo-400 uppercase mb-2">Kas Terkumpul</p>
+                        <h4 id="total-kas-dash" class="text-3xl font-black text-indigo-600">Rp 0</h4>
+                    </div>
+                    <div class="bento-card bg-emerald-50 border-emerald-100 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-emerald-400 uppercase mb-2">Mood Kelas Hari Ini</p>
+                        <h4 class="text-4xl">🔥</h4>
+                    </div>
+                    <div class="bento-card col-span-2">
+                        <h4 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-widest">Jadwal Hari Ini</h4>
+                        <div class="space-y-3" id="dash-jadwal">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <span class="font-bold text-sm">Produktif (Coding)</span>
+                                <span class="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full border">07:00 - 12:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bento-card col-span-2 flex items-center gap-6">
+                        <div class="w-20 h-20 bg-slate-900 rounded-3xl flex flex-center items-center justify-center text-white text-3xl font-black">120</div>
+                        <div>
+                            <h4 class="text-lg font-black tracking-tighter italic">Hari Menuju Kelulusan</h4>
+                            <p class="text-xs text-slate-400 font-bold">Keep fighting, future software engineers!</p>
+                        </div>
                     </div>
                 </section>
 
-                <section id="section-chat" class="page-content hide card-custom p-8 flex flex-col h-[75vh]">
-                    <div id="chat-box" class="chat-box flex-1 mb-6 p-6 bg-slate-50 rounded-[2rem] space-y-4"></div>
+                <section id="section-chat" class="page-content hide bento-card flex flex-col h-[75vh]">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-black text-xl italic uppercase tracking-tighter">Forum Warga RPL 2</h3>
+                        <span class="px-4 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest"><span class="status-dot bg-emerald-500 animate-ping"></span> Live</span>
+                    </div>
+                    <div id="chat-box" class="chat-area flex-1 mb-6 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] space-y-4"></div>
                     <div class="flex gap-3">
-                        <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 p-5 bg-slate-100 rounded-2xl font-bold outline-none focus:ring-2 ring-indigo-500">
-                        <button onclick="window.db_ops.sendChat()" class="p-5 bg-indigo-600 text-white rounded-2xl w-20 hover:scale-105 transition shadow-lg shadow-indigo-200"><i class="fas fa-paper-plane"></i></button>
+                        <input type="text" id="chat-input" placeholder="Tulis pesan ke semua..." class="flex-1 p-6 bg-slate-100 dark:bg-slate-800 rounded-3xl font-bold outline-none focus:ring-4 ring-indigo-500/20 transition-all border-0">
+                        <button onclick="window.db_ops.sendChat()" class="p-6 bg-indigo-600 text-white rounded-3xl w-24 hover:scale-105 transition-all shadow-xl shadow-indigo-500/30"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </section>
 
-                <section id="section-absen-siswa" class="page-content hide card-custom p-10">
+                <section id="section-absen-siswa" class="page-content hide bento-card">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="font-black text-xl italic uppercase tracking-tighter">Presensi Kehadiran Siswa</h3>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase">Hadir</span>
+                            <span class="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase">Sakit</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase">Izin</span>
+                            <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase">Alpa</span>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="list-absen-siswa"></div>
                 </section>
 
-                <section id="section-absen-guru" class="page-content hide card-custom p-10">
-                    <div class="grid grid-cols-1 gap-3" id="list-absen-guru"></div>
+                <section id="section-materi" class="page-content hide space-y-6">
+                    <div class="bento-card border-dashed border-2 bg-indigo-50/30">
+                        <h4 class="text-xs font-black uppercase text-indigo-500 mb-4 tracking-widest">Tambah Link Materi/Tugas</h4>
+                        <div class="flex gap-4">
+                            <input type="text" id="m-judul" placeholder="Judul Materi..." class="flex-1 p-5 rounded-2xl border font-bold">
+                            <input type="text" id="m-link" placeholder="Link (Drive/PDF)..." class="flex-1 p-5 rounded-2xl border font-bold">
+                            <button onclick="window.db_ops.sendMateri()" class="px-8 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase">Share</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="list-materi"></div>
+                </section>
+
+                <section id="section-voting" class="page-content hide bento-card">
+                    <h3 class="font-black text-xl mb-8 uppercase tracking-tighter">Class Decisions / Polling</h3>
+                    <div id="voting-area" class="space-y-4">
+                        <div class="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                            <h4 class="font-black text-lg mb-4">Lokasi Perpisahan Kelas?</h4>
+                            <div class="space-y-2">
+                                <button class="w-full p-4 bg-white border-2 border-indigo-100 rounded-2xl font-bold flex justify-between items-center hover:border-indigo-500 transition-all">
+                                    <span>Pantai Ancol</span> <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-xs">12 Vote</span>
+                                </button>
+                                <button class="w-full p-4 bg-white border-2 border-indigo-100 rounded-2xl font-bold flex justify-between items-center">
+                                    <span>Puncak Bogor</span> <span class="bg-slate-200 text-slate-500 px-3 py-1 rounded-full text-xs">8 Vote</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-kas" class="page-content hide space-y-6">
+                    <div id="bendahara-kas-input" class="hide bento-card bg-emerald-50/50 border-emerald-100">
+                        <div class="flex gap-4">
+                            <select id="k-nama" class="flex-1 p-5 bg-white rounded-2xl font-bold border-0 shadow-sm"></select>
+                            <input type="number" id="k-jumlah" placeholder="Rp 0" class="w-48 p-5 bg-white rounded-2xl font-bold border-0 shadow-sm">
+                            <button onclick="window.db_ops.sendKas()" class="bg-emerald-600 text-white px-10 rounded-2xl font-black text-xs uppercase shadow-lg shadow-emerald-200 transition-all active:scale-95">Input Data</button>
+                        </div>
+                    </div>
+                    <div class="bento-card">
+                        <h4 class="text-xs font-black uppercase text-slate-400 mb-6 tracking-widest">History Keuangan RPL 2</h4>
+                        <div id="list-kas" class="space-y-2"></div>
+                    </div>
                 </section>
 
                 <section id="section-tugas" class="page-content hide space-y-4">
-                    <div id="guru-tugas-input" class="hide p-10 card-custom border-dashed border-2 bg-slate-50/50">
-                        <input type="text" id="t-judul" placeholder="Tulis tugas baru..." class="w-full p-5 bg-white rounded-2xl font-bold outline-none border mb-4">
-                        <button onclick="window.db_ops.sendTugas()" class="bg-indigo-600 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest">Publish</button>
+                    <div id="guru-tugas-input" class="hide bento-card border-dashed border-2 bg-slate-50">
+                        <input type="text" id="t-judul" placeholder="Tulis instruksi tugas..." class="w-full p-5 bg-white rounded-2xl font-bold border mb-4">
+                        <button onclick="window.db_ops.sendTugas()" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-black text-[10px] uppercase">Posting Sekarang</button>
                     </div>
                     <div id="list-tugas" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </section>
 
-                <section id="section-kas" class="page-content hide space-y-6">
-                    <div id="bendahara-kas-input" class="hide p-10 card-custom bg-emerald-50/50 border-emerald-100">
-                        <div class="flex gap-4">
-                            <select id="k-nama" class="flex-1 p-5 bg-white rounded-2xl font-bold outline-none border"></select>
-                            <input type="number" id="k-jumlah" placeholder="Rp" class="w-40 p-5 bg-white rounded-2xl font-bold outline-none border">
-                            <button onclick="window.db_ops.sendKas()" class="bg-emerald-600 text-white px-10 rounded-2xl font-black text-[10px] uppercase">Simpan</button>
-                        </div>
-                    </div>
-                    <div class="card-custom p-10">
-                        <div id="list-kas" class="space-y-3"></div>
-                    </div>
+                <section id="section-piket" class="page-content hide bento-card">
+                    <h3 class="font-black text-xl mb-6 italic">Daily Cleaning Squad</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="list-piket-all"></div>
                 </section>
+
+                <section id="section-absen-guru" class="page-content hide bento-card">
+                    <h3 class="font-black text-xl mb-6">Kehadiran Guru di Kelas</h3>
+                    <div id="list-absen-guru" class="space-y-3"></div>
+                </section>
+
             </div>
         </main>
     </div>
@@ -143,7 +235,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // CONFIG FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCKoeMMj0-iAVb_xp998S1W3U4KU3fuFVs",
             authDomain: "web-kelaz.firebaseapp.com",
@@ -157,46 +248,50 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // DATA SISWA (A-Z) - CLEANED & SORTED
-        const SISWA_NAMES = [
+        // DATA SISWA RPL 2 (A-Z)
+        const SISWA_RPL_2 = [
             "A Fabian Syah", "Abdul Wafi", "Achmad Wildan", "Ahmad Alfi", "Ahmad Azriel", 
             "Andrea Hafshah Oktavia", "Attaya Kayla", "Cahyo Kartiko", "Farrel Alkhayri", 
             "Karina Sakila", "Kevin Oktavian Suryana", "Khaysila", "Kinddy Putra", 
             "M Naufal Permana", "M Reza Febriansyah", "M Rizki Fadilah Guntor", 
             "M Rizki Mulya", "M Rizqi Mubarak", "M Sigit Maulana", "M Tegar Alyasin", 
-            "M. Refi Yanto", "Muhamad Daffa Alexandrio", "Muhamad Raffi Alfathir", 
-            "Muhammad Ridwan", "Raehan Syafa", "Raffa Maydiansyah", "Rafi Izatul", 
-            "Rahil Aristya Aimar", "Rama Putra", "Ranie Dwi Putri", "Revan", 
-            "Syakirah Azraa", "Three Argha Zulita", "Vino Pratama", "Vino Sigit H", 
-            "Zainal Arifin"
-        ];
+            "M. Refi Yanto", "Moch Farel Al Khairy", "Muhamad Daffa Alexandrio", 
+            "Muhamad Raffi Alfathir", "Muhammad Ridwan", "Raehan Syafa", 
+            "Raffa Maydiansyah", "Rafi Izatul", "Rahil Aristya Aimar", "Rama Putra", 
+            "Ranie Dwi Putri", "Revan", "Syakirah Azraa", "Three Argha Zulita", 
+            "Vino Pratama", "Vino Sigit H", "Zainal Arifin"
+        ].sort();
 
-        const GURU_NAMES = [
-            "Wali Kelas XII RPL 2", "Guru Produktif RPL", "Guru Sejarah", "Guru B. Indonesia", 
-            "Guru B. Jepang", "Guru B. Inggris", "Guru Matematika", "Guru PKK", 
-            "Guru PKN", "Guru PJOK", "Guru PAI"
-        ];
+        const GURU_LIST = ["Wali Kelas XII RPL 2", "Produktif RPL", "Sejarah", "B. Indonesia", "B. Jepang", "B. Inggris", "Matematika", "PKK", "PKN", "PJOK", "PAI"];
 
-        // UI HELPERS
+        // PIKET DATA (Fitur 2)
+        const PIKET_DAY = {
+            "Senin": ["A Fabian Syah", "Abdul Wafi", "Achmad Wildan", "Ahmad Alfi"],
+            "Selasa": ["Ahmad Azriel", "Andrea Hafshah", "Attaya Kayla", "Cahyo Kartiko"],
+            "Rabu": ["Farrel Alkhayri", "Karina Sakila", "Kevin Oktavian", "Khaysila"],
+            "Kamis": ["Kinddy Putra", "M Naufal Permana", "M Reza Febriansyah", "M Rizki Fadilah"],
+            "Jumat": ["M Rizki Mulya", "M Rizqi Mubarak", "M Sigit Maulana", "M Tegar Alyasin"]
+        };
+
+        // --- CORE UI FUNCTIONS ---
+        window.toggleDarkMode = () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+        };
+
         window.goToLogin = () => {
             document.getElementById('view-landing').classList.add('hide');
-            document.getElementById('view-login').classList.remove('hide', 'animate__animated', 'animate__zoomIn');
-            void document.getElementById('view-login').offsetWidth; 
-            document.getElementById('view-login').classList.add('animate__animated', 'animate__zoomIn');
+            document.getElementById('view-login').classList.remove('hide');
         };
 
         window.updateNameList = () => {
             const role = document.getElementById('select-role').value;
             const sel = document.getElementById('select-nama');
             sel.innerHTML = '<option disabled selected>Pilih Nama...</option>';
-            
-            let list = [];
-            if(role === 'Guru') list = GURU_NAMES;
-            else if(role === 'Murid') list = SISWA_NAMES;
-            else if(role === 'Ketua Kelas') list = ["Cahyo Kartiko"];
-            else if(role === 'Sekretaris') list = ["Ahmad Azriel"];
-            else if(role === 'Bendahara') list = ["Khaysila"];
-
+            let list = (role === 'Guru') ? GURU_LIST : (role === 'Murid' ? SISWA_RPL_2 : 
+                      (role === 'Ketua Kelas' ? ["Cahyo Kartiko"] : 
+                      (role === 'Sekretaris' ? ["Ahmad Azriel"] : ["Khaysila"])));
             list.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
         };
 
@@ -214,27 +309,19 @@
             location.reload();
         };
 
-        window.showContent = (page) => {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hide'));
-            document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
-            const target = document.getElementById('section-' + page);
-            target.classList.remove('hide');
-            target.classList.add('animate__animated', 'animate__fadeInUp', 'animate__faster');
-            document.getElementById('btn-' + page).classList.add('active');
-            document.getElementById('page-title').innerText = page.replace('-', ' ').toUpperCase();
+        window.showContent = (p) => {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('section-'+p).classList.remove('hide');
+            document.getElementById('btn-'+p).classList.add('active');
         };
 
-        // DATABASE OPERATIONS
+        // --- DATABASE OPERATIONS ---
         window.db_ops = {
             sendChat: () => {
-                const text = document.getElementById('chat-input').value;
-                if(!text) return;
-                push(ref(db, 'chats'), {
-                    n: localStorage.getItem('uName'),
-                    r: localStorage.getItem('uRole'),
-                    t: text,
-                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                });
+                const t = document.getElementById('chat-input').value;
+                if(!t) return;
+                push(ref(db, 'chats'), { n: localStorage.getItem('uName'), r: localStorage.getItem('uRole'), t, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
                 document.getElementById('chat-input').value = '';
             },
             sendTugas: () => {
@@ -242,6 +329,13 @@
                 if(!j) return;
                 push(ref(db, 'tugas'), { j, sender: localStorage.getItem('uName'), date: new Date().toLocaleDateString() });
                 document.getElementById('t-judul').value = '';
+            },
+            sendMateri: () => {
+                const judul = document.getElementById('m-judul').value;
+                const link = document.getElementById('m-link').value;
+                if(!judul || !link) return;
+                push(ref(db, 'materi'), { judul, link, sender: localStorage.getItem('uName') });
+                document.getElementById('m-judul').value = ''; document.getElementById('m-link').value = '';
             },
             markSiswa: (n, s) => {
                 set(ref(db, 'absen_siswa/' + n.replace(/\s/g, '_')), { s, by: localStorage.getItem('uName') });
@@ -253,13 +347,12 @@
                 const n = document.getElementById('k-nama').value;
                 const j = document.getElementById('k-jumlah').value;
                 if(!n || !j) return;
-                push(ref(db, 'kas'), { n, j });
+                push(ref(db, 'kas'), { n, j, date: new Date().toLocaleDateString() });
             }
         };
 
-        // REALTIME SYNC
+        // --- REALTIME LISTENERS ---
         function startSync() {
-            // Sync Chat
             onValue(query(ref(db, 'chats'), limitToLast(20)), (snap) => {
                 const box = document.getElementById('chat-box');
                 box.innerHTML = '';
@@ -269,33 +362,30 @@
                         const isMe = m.n === localStorage.getItem('uName');
                         box.innerHTML += `
                             <div class="flex ${isMe ? 'justify-end' : 'justify-start'} animate__animated animate__fadeInUp animate__faster">
-                                <div class="${isMe ? 'bg-indigo-600 text-white' : 'bg-white border text-slate-700'} p-4 rounded-3xl max-w-[80%] shadow-sm">
-                                    <p class="text-[7px] font-black uppercase opacity-60 mb-1">${m.n} (${m.r})</p>
-                                    <p class="text-xs font-bold">${m.t}</p>
+                                <div class="${isMe ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-800 border dark:border-slate-700 text-slate-700 dark:text-slate-200'} p-5 rounded-[2rem] max-w-[80%] shadow-sm">
+                                    <p class="text-[7px] font-black uppercase opacity-60 mb-1">${m.n} • ${m.r}</p>
+                                    <p class="text-[13px] font-bold">${m.t}</p>
                                 </div>
                             </div>`;
                     });
                 }
             });
 
-            // Sync Absen Siswa
             onValue(ref(db, 'absen_siswa'), (snap) => {
                 const data = snap.val() || {};
                 const list = document.getElementById('list-absen-siswa');
                 const canEdit = ["Sekretaris", "Ketua Kelas", "Guru"].includes(localStorage.getItem('uRole'));
-                
-                list.innerHTML = SISWA_NAMES.map(n => {
+                list.innerHTML = SISWA_RPL_2.map(n => {
                     const k = n.replace(/\s/g, '_');
                     const st = data[k]?.s || 'B';
-                    const colorMap = { 'H': 'bg-emerald-500', 'S': 'bg-amber-500', 'I': 'bg-blue-500', 'A': 'bg-red-500', 'B': 'bg-white text-slate-300' };
-                    
+                    const colorMap = { 'H': 'bg-emerald-500', 'S': 'bg-amber-500', 'I': 'bg-blue-500', 'A': 'bg-red-500', 'B': 'bg-slate-100 dark:bg-slate-800 text-slate-400' };
                     return `
-                        <div class="flex justify-between items-center p-4 bg-slate-50/50 rounded-3xl border border-slate-100">
-                            <span class="text-[10px] font-black text-slate-700">${n}</span>
+                        <div class="flex justify-between items-center p-5 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-slate-100 dark:border-slate-800">
+                            <span class="text-[11px] font-black text-slate-700 dark:text-slate-300">${n}</span>
                             <div class="flex gap-1">
                                 ${['H','S','I','A'].map(opt => `
                                     <button onclick="${canEdit ? `window.db_ops.markSiswa('${n}','${opt}')` : ''}" 
-                                    class="status-btn ${st === opt ? colorMap[opt] + ' text-white border-transparent' : colorMap['B']}">
+                                    class="w-8 h-8 rounded-xl text-[10px] font-black transition-all ${st === opt ? colorMap[opt] + ' text-white scale-110 shadow-lg' : colorMap['B']}">
                                         ${opt}
                                     </button>
                                 `).join('')}
@@ -304,78 +394,73 @@
                 }).join('');
             });
 
-            // Sync Absen Guru
-            onValue(ref(db, 'absen_guru'), (snap) => {
-                const data = snap.val() || {};
-                const list = document.getElementById('list-absen-guru');
-                const isGuru = localStorage.getItem('uRole') === 'Guru';
-                
-                list.innerHTML = GURU_NAMES.map(n => {
-                    const k = n.replace(/\s/g, '_');
-                    const st = data[k]?.s || 'B';
-                    return `
-                        <div class="flex justify-between items-center p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
-                            <span class="text-xs font-black text-slate-800">${n}</span>
-                            ${isGuru && n === localStorage.getItem('uName') ? 
-                                `<button onclick="window.db_ops.markGuru('${n}','H')" class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase">Masuk Kelas</button>` : 
-                                `<span class="text-[10px] font-black ${st==='H'?'text-emerald-500':'text-slate-300'} uppercase italic">${st==='H'?'Hadir':'Belum Absen'}</span>`}
-                        </div>`;
-                }).join('');
-            });
-
-            // Sync Kas
             onValue(ref(db, 'kas'), (snap) => {
                 const data = snap.val();
                 const list = document.getElementById('list-kas');
-                let total = 0;
-                list.innerHTML = '';
+                let total = 0; list.innerHTML = '';
                 if(data) {
                     Object.values(data).reverse().forEach(k => {
                         total += parseInt(k.j);
-                        list.innerHTML += `<div class="flex justify-between p-4 bg-slate-50 rounded-2xl text-[10px] font-black uppercase"><span>${k.n}</span><span class="text-emerald-600">Rp ${parseInt(k.j).toLocaleString()}</span></div>`;
+                        list.innerHTML += `<div class="flex justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-[11px] font-black uppercase"><span>${k.n}</span><span class="text-emerald-500">Rp ${parseInt(k.j).toLocaleString()}</span></div>`;
                     });
                 }
-                document.getElementById('total-kas-display').innerText = 'Rp ' + total.toLocaleString();
+                document.getElementById('total-kas-dash').innerText = 'Rp ' + total.toLocaleString();
             });
 
-            // Sync Tugas
-            onValue(ref(db, 'tugas'), (snap) => {
+            onValue(ref(db, 'materi'), (snap) => {
                 const data = snap.val();
-                const list = document.getElementById('list-tugas');
+                const list = document.getElementById('list-materi');
                 list.innerHTML = '';
                 if(data) {
-                    Object.values(data).reverse().forEach(t => {
-                        list.innerHTML += `<div class="p-8 card-custom"><p class="text-[8px] font-black text-indigo-500 uppercase mb-2">${t.sender} • ${t.date}</p><h4 class="font-bold text-slate-800 text-sm">${t.j}</h4></div>`;
+                    Object.values(data).reverse().forEach(m => {
+                        list.innerHTML += `
+                        <div class="bento-card p-6 flex flex-col justify-between">
+                            <i class="fas fa-file-pdf text-3xl text-red-500 mb-4"></i>
+                            <h4 class="font-black text-sm mb-2">${m.judul}</h4>
+                            <p class="text-[8px] font-bold text-slate-400 mb-4 uppercase">By ${m.sender}</p>
+                            <a href="${m.link}" target="_blank" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-center text-[10px] font-black uppercase tracking-widest">Download</a>
+                        </div>`;
                     });
                 }
             });
         }
 
-        // APP INITIALIZER
+        // --- APP INITIALIZER ---
         function initAppUI() {
-            const r = localStorage.getItem('uRole');
-            const n = localStorage.getItem('uName');
+            const r = localStorage.getItem('uRole'), n = localStorage.getItem('uName');
             if(r && n) {
                 document.getElementById('view-landing').classList.add('hide');
                 document.getElementById('view-login').classList.add('hide');
                 document.getElementById('view-app').classList.remove('hide');
                 document.getElementById('u-name').innerText = n;
                 document.getElementById('u-role').innerText = r;
+                document.getElementById('dash-user').innerText = n.split(' ')[0];
                 document.getElementById('u-initial').innerText = n.charAt(0);
                 document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
                 if(r === 'Bendahara') {
                     document.getElementById('bendahara-kas-input').classList.remove('hide');
                     const kn = document.getElementById('k-nama');
-                    SISWA_NAMES.forEach(s => kn.innerHTML += `<option value="${s}">${s}</option>`);
+                    SISWA_RPL_2.forEach(s => kn.innerHTML += `<option value="${s}">${s}</option>`);
                 }
                 if(r === 'Guru') document.getElementById('guru-tugas-input').classList.remove('hide');
+                
+                // Show Piket (Fitur 2)
+                const piketBox = document.getElementById('list-piket-all');
+                Object.entries(PIKET_DAY).forEach(([day, members]) => {
+                    piketBox.innerHTML += `
+                        <div class="p-4 bg-slate-50 dark:bg-slate-800 rounded-3xl border">
+                            <p class="text-[10px] font-black text-indigo-600 uppercase mb-3">${day}</p>
+                            ${members.map(m => `<p class="text-[9px] font-bold mb-1">• ${m}</p>`).join('')}
+                        </div>`;
+                });
 
                 startSync();
                 showContent('dash');
             }
         }
 
+        if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
         initAppUI();
     </script>
 </body>
