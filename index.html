@@ -2,202 +2,373 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XII RPL 2 - SUPREME COMMAND</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPL 2 OS - SYSTEM V4.0 [GOD MODE]</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7fe; color: #1e293b; transition: 0.3s; }
-        .hide { display: none !important; }
-        .sidebar-active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-300 scale-105; }
-        .bento { @apply bg-white rounded-[2.5rem] p-8 border border-slate-200/60 shadow-sm hover:shadow-2xl transition-all duration-500; }
-        .chat-area { height: 450px; overflow-y: auto; display: flex; flex-direction: column; scroll-behavior: smooth; }
-        .avatar-lg { @apply w-16 h-16 rounded-[1.5rem] border-4 border-white shadow-lg object-cover bg-slate-200; }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        :root { --glass: rgba(255, 255, 255, 0.75); --glass-border: rgba(255, 255, 255, 0.4); }
+        .dark-mode { --glass: rgba(15, 23, 42, 0.85); --glass-border: rgba(51, 65, 85, 0.5); color: #fff; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow: hidden; 
+            background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed; 
+            background-size: cover;
+            user-select: none;
+        }
+
+        /* GLASSMORPHISM ENGINE */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* WINDOW SYSTEM */
+        .window-app {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 800px; height: 550px;
+            border-radius: 12px;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.2s, opacity 0.2s;
+            opacity: 0; pointer-events: none;
+            z-index: 100;
+            resize: both;
+        }
+        .window-app.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: all; }
+        .window-app.minimized { transform: translate(-50%, 100vh) scale(0.1); opacity: 0; }
+        .window-header { cursor: grab; background: rgba(0,0,0,0.05); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .window-header:active { cursor: grabbing; }
+
+        /* DESKTOP ICONS */
+        .desktop-icon {
+            width: 90px; height: 90px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .desktop-icon:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+
+        /* TASKBAR */
+        .taskbar {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            height: 60px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 20px;
+            border-radius: 20px;
+            z-index: 9999;
+        }
+        .dock-item { transition: 0.2s; position: relative; }
+        .dock-item:hover { transform: translateY(-10px) scale(1.2); }
+        .dock-dot { width: 5px; height: 5px; background: white; border-radius: 50%; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); display: none; }
+        .dock-item.running .dock-dot { display: block; }
+
+        /* CUSTOM SCROLL */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+
+        /* LOADING */
+        #boot-screen { z-index: 10000; background: #000; color: #0f0; font-family: 'JetBrains Mono', monospace; }
+
+        /* UTILS */
+        .hide { display: none !important; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased h-screen w-screen overflow-hidden">
 
-    <div id="view-login" class="min-h-screen flex items-center justify-center bg-slate-950 relative overflow-hidden p-6">
-        <div class="absolute w-[600px] h-[600px] bg-indigo-600 rounded-full blur-[180px] -top-20 -left-20 opacity-20"></div>
-        <div class="z-10 w-full max-w-lg animate__animated animate__fadeIn">
-            <div class="text-center mb-10 text-white">
-                <h1 class="text-7xl font-black italic tracking-tighter">RPL<span class="text-indigo-500">2.</span></h1>
-                <p class="text-xs font-bold uppercase tracking-[0.5em] opacity-50 mt-4">Supreme Class Management</p>
-            </div>
-            <div class="bg-white p-12 rounded-[4rem] shadow-2xl">
-                <div class="space-y-5">
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2 mb-2 block">Akses Sebagai</label>
-                        <select id="login-role" onchange="syncLoginNames()" class="w-full p-5 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:border-indigo-500 transition-all outline-none appearance-none">
-                            <option value="" disabled selected>Pilih Role...</option>
-                            <option value="Walas">Wali Kelas</option>
-                            <option value="Guru">Guru Mata Pelajaran</option>
-                            <option value="Ketua Kelas">Ketua Kelas</option>
-                            <option value="Sekretaris">Sekretaris</option>
-                            <option value="Bendahara">Bendahara</option>
-                            <option value="Murid">Siswa/i RPL 2</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2 mb-2 block">Nama Lengkap</label>
-                        <select id="login-name" class="w-full p-5 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:border-indigo-500 transition-all outline-none appearance-none">
-                            <option value="" disabled selected>Pilih Nama...</option>
-                        </select>
-                    </div>
-                    <button onclick="doLogin()" class="w-full bg-indigo-600 text-white py-6 rounded-3xl font-black uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-indigo-200">Masuk Sistem</button>
-                </div>
+    <div id="boot-screen" class="fixed inset-0 flex flex-col items-center justify-center p-10">
+        <div class="w-full max-w-2xl">
+            <h1 class="text-4xl font-bold mb-4">RPL-OS <span class="text-xs bg-green-900 text-green-300 px-2 py-1">KERNEL V4.0</span></h1>
+            <div id="boot-log" class="text-xs space-y-1 h-64 overflow-y-auto mb-4 opacity-70"></div>
+            <div class="w-full bg-green-900/30 h-2 rounded-full overflow-hidden">
+                <div id="boot-bar" class="h-full bg-green-500 w-0 transition-all duration-[3000ms]"></div>
             </div>
         </div>
     </div>
 
-    <div id="view-app" class="hide flex min-h-screen">
-        <aside class="w-80 bg-white border-r border-slate-100 p-8 fixed h-full flex flex-col z-50">
-            <div class="mb-10 flex items-center gap-4">
-                <div class="w-12 h-12 bg-slate-950 rounded-2xl flex items-center justify-center text-white text-2xl font-black italic">R2</div>
-                <div>
-                    <h2 class="text-xl font-black italic leading-none">RPL 2</h2>
-                    <p class="text-[8px] font-black text-indigo-500 uppercase tracking-widest mt-1">Premiere Hub</p>
-                </div>
-            </div>
+    <div id="lock-screen" class="fixed inset-0 z-[5000] glass-panel bg-black/60 flex items-center justify-center hide backdrop-blur-3xl">
+        <div class="text-center w-full max-w-md p-10 bg-white/10 rounded-[3rem] border border-white/20 shadow-2xl">
+            <img id="lock-ava" src="https://ui-avatars.com/api/?name=RPL2" class="w-32 h-32 rounded-full mx-auto border-4 border-white shadow-xl mb-6">
+            <h2 class="text-3xl font-bold text-white mb-2">Selamat Datang</h2>
+            <p class="text-white/60 mb-8 tracking-widest uppercase text-xs">Supreme Class System V4.0</p>
             
-            <nav class="space-y-1 flex-1 overflow-y-auto pr-2 custom-scroll">
-                <button onclick="nav('dash')" id="btn-dash" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-home-alt"></i> Dashboard</button>
-                <button onclick="nav('chat')" id="btn-chat" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-comment-alt-lines"></i> Forum Chat</button>
-                <button onclick="nav('absen')" id="btn-absen" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-user-check"></i> Absensi</button>
-                <button onclick="nav('kas')" id="btn-kas" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-wallet"></i> Uang Kas</button>
-                <button onclick="nav('piket')" id="btn-piket" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-broom"></i> Jadwal Piket</button>
-                <button onclick="nav('voting')" id="btn-voting" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-poll-h"></i> Polling Kelas</button>
-                <button onclick="nav('materi')" id="btn-materi" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-book-open"></i> Mapel & Materi</button>
-                <button onclick="nav('extra')" id="btn-extra" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all"><i class="fas fa-stars"></i> Extra 20+</button>
-                
-                <div id="admin-gate" class="hide pt-6">
-                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest px-4 mb-2">Control Room</p>
-                    <button onclick="nav('admin')" id="btn-admin" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-indigo-600 bg-indigo-50 flex items-center gap-4"><i class="fas fa-user-shield"></i> Walas Editor</button>
-                </div>
-            </nav>
+            <select id="login-role" onchange="syncLoginNames()" class="w-full mb-3 p-4 rounded-xl bg-black/40 text-white border border-white/10 outline-none">
+                <option value="" disabled selected>Pilih Role...</option>
+                <option value="Walas">Admin (Walas)</option>
+                <option value="Guru">Guru Mapel</option>
+                <option value="Ketua Kelas">Ketua Kelas</option>
+                <option value="Sekretaris">Sekretaris</option>
+                <option value="Bendahara">Bendahara</option>
+                <option value="Murid">Warga RPL 2</option>
+            </select>
+            
+            <select id="login-name" class="w-full mb-6 p-4 rounded-xl bg-black/40 text-white border border-white/10 outline-none">
+                <option value="" disabled selected>Pilih Nama...</option>
+            </select>
 
-            <button onclick="logout()" class="p-5 mt-6 bg-red-50 text-red-500 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-power-off mr-2"></i> Keluar</button>
-        </aside>
+            <button onclick="bootSystem()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/50">
+                <i class="fas fa-fingerprint mr-2"></i> AKSES SISTEM
+            </button>
+        </div>
+    </div>
 
-        <main class="ml-80 flex-1 p-12">
-            <header class="flex justify-between items-end mb-12">
-                <div>
-                    <h3 id="page-title" class="text-5xl font-black italic tracking-tighter uppercase">Dashboard</h3>
-                    <p id="clock" class="text-[11px] font-bold text-indigo-500 uppercase tracking-[0.4em] mt-2"></p>
-                </div>
-                <div class="flex items-center gap-6 bg-white p-3 pr-8 rounded-[2rem] shadow-sm border">
-                    <div class="relative group">
-                        <img id="my-ava" src="" class="avatar-lg">
-                        <label class="absolute inset-0 bg-black/60 rounded-[1.5rem] opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-all">
-                            <i class="fas fa-camera text-white"></i>
-                            <input type="file" id="up-ava" class="hidden" accept=".png">
-                        </label>
-                    </div>
-                    <div>
-                        <p id="u-name" class="text-lg font-black leading-none text-slate-900">Name</p>
-                        <p id="u-role" class="text-[9px] font-bold text-indigo-500 uppercase tracking-[0.2em] mt-2">Role</p>
-                    </div>
-                </div>
-            </header>
-
-            <div id="content-flow">
-                <section id="section-dash" class="page-content grid grid-cols-1 md:grid-cols-3 gap-8 animate__animated animate__fadeIn">
-                    <div onclick="nav('materi')" class="col-span-2 bg-indigo-600 rounded-[3.5rem] p-12 text-white relative overflow-hidden cursor-pointer group">
-                        <i class="fas fa-calendar-alt absolute -right-10 -bottom-10 text-[20rem] opacity-10 group-hover:scale-110 transition-all"></i>
-                        <p class="text-xs font-black uppercase tracking-[0.4em] opacity-70 mb-4">Mata Pelajaran Saat Ini:</p>
-                        <h2 id="live-mapel" class="text-6xl font-black italic tracking-tighter mb-6">Mencari...</h2>
-                        <div class="flex items-center gap-6">
-                            <span id="live-jam" class="bg-white/20 px-6 py-3 rounded-2xl font-black text-sm">--:--</span>
-                            <span class="text-sm font-bold opacity-60 italic underline">Lihat Jadwal Mingguan ➜</span>
-                        </div>
-                    </div>
-                    <div class="bento flex flex-col items-center justify-center">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Mood Kelas</p>
-                        <div class="text-7xl animate-bounce">🔥</div>
-                        <p class="mt-6 font-black text-slate-800">RPL 2 ON FIRE!</p>
-                    </div>
-                    <div class="bento col-span-1">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-4">Kas Terkumpul</p>
-                        <h3 id="dash-kas" class="text-4xl font-black italic text-indigo-600">Rp 0</h3>
-                    </div>
-                    <div class="bento col-span-2 overflow-hidden">
-                        <p class="text-[10px] font-black text-indigo-500 uppercase mb-4 tracking-widest">Berita Kelas</p>
-                        <marquee class="font-bold text-slate-700 text-lg">Informasi: Pengumpulan Tugas Portofolio RPL diundur sampai hari Sabtu! • Jangan lupa bayar uang kas ke Khaysila! • Jaga kebersihan kelas!</marquee>
-                    </div>
-                </section>
-
-                <section id="section-chat" class="page-content hide animate__animated animate__fadeInUp">
-                    <div class="bg-white rounded-[3.5rem] shadow-2xl border flex flex-col h-[75vh] overflow-hidden">
-                        <div id="chat-box" class="chat-area p-10 space-y-6 custom-scroll"></div>
-                        <div class="p-8 bg-slate-50 border-t flex gap-4">
-                            <input type="text" id="chat-in" placeholder="Tulis pesan..." class="flex-1 p-6 bg-white rounded-3xl font-bold outline-none shadow-sm focus:ring-4 ring-indigo-500/10 border-none">
-                            <button onclick="pushChat()" class="w-24 bg-indigo-600 text-white rounded-3xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
-                                <i class="fas fa-paper-plane text-2xl"></i>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="section-voting" class="page-content hide space-y-8">
-                    <div id="poll-ctrl" class="hide bento bg-indigo-50 border-indigo-100">
-                        <h4 class="font-black text-xl mb-6 italic">Buat Polling Baru (Ketua Kelas Only)</h4>
-                        <div class="flex gap-4">
-                            <input type="text" id="poll-q" placeholder="Contoh: Lokasi Jalan-jalan Kelas?" class="flex-1 p-5 rounded-2xl border-none shadow-inner font-bold">
-                            <button onclick="addPoll()" class="bg-indigo-600 text-white px-10 rounded-2xl font-black uppercase text-xs">Publish</button>
-                        </div>
-                    </div>
-                    <div id="poll-list" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
-                </section>
-
-                <section id="section-admin" class="page-content hide bento">
-                    <h3 class="text-3xl font-black italic mb-10 border-b pb-6">Walas Control Center</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        <div>
-                            <p class="text-xs font-black uppercase text-indigo-500 mb-6 tracking-widest">Atur Jadwal Pelajaran</p>
-                            <div id="edit-mapel" class="space-y-3"></div>
-                        </div>
-                        <div>
-                            <p class="text-xs font-black uppercase text-indigo-500 mb-6 tracking-widest">Atur Petugas Piket</p>
-                            <div id="edit-piket" class="space-y-3"></div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="section-absen" class="page-content hide grid grid-cols-1 md:grid-cols-3 gap-4" id="absensi-grid"></section>
-                <section id="section-kas" class="page-content hide bento" id="kas-history"></section>
-                <section id="section-piket" class="page-content hide grid grid-cols-1 md:grid-cols-5 gap-4" id="piket-full"></section>
-                <section id="section-materi" class="page-content hide bento" id="materi-full"></section>
-                <section id="section-extra" class="page-content hide grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bento h-40 flex flex-col items-center justify-center">
-                        <i class="fas fa-qrcode text-3xl mb-3 text-indigo-600"></i>
-                        <p class="font-black text-[10px] uppercase">QR Absen</p>
-                    </div>
-                    <div class="bento h-40 flex flex-col items-center justify-center">
-                        <i class="fas fa-pencil-ruler text-3xl mb-3 text-amber-500"></i>
-                        <p class="font-black text-[10px] uppercase">Digital Stationery</p>
-                    </div>
-                    <div class="bento h-40 flex flex-col items-center justify-center">
-                        <i class="fas fa-images text-3xl mb-3 text-emerald-500"></i>
-                        <p class="font-black text-[10px] uppercase">Class Gallery</p>
-                    </div>
-                    <div class="bento h-40 flex flex-col items-center justify-center">
-                        <i class="fas fa-music text-3xl mb-3 text-red-500"></i>
-                        <p class="font-black text-[10px] uppercase">Class Playlist</p>
-                    </div>
-                </section>
-
+    <div id="desktop" class="w-full h-full relative hide">
+        
+        <div class="absolute top-8 right-8 w-80 flex flex-col gap-4 pointer-events-none">
+            <div class="glass-panel p-6 rounded-3xl text-white pointer-events-auto hover:scale-105 transition-transform">
+                <h1 id="jam-digital" class="text-5xl font-black tracking-tighter">00:00</h1>
+                <p id="tanggal-digital" class="text-sm font-medium opacity-80">Senin, 1 Januari 2026</p>
             </div>
-        </main>
+            <div class="glass-panel p-6 rounded-3xl text-white pointer-events-auto">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] uppercase font-bold bg-white/20 px-2 py-1 rounded">Sekarang</span>
+                    <span class="text-xs animate-pulse">🔴 Live</span>
+                </div>
+                <h2 id="widget-mapel" class="text-2xl font-bold leading-none mb-1">Istirahat</h2>
+                <p id="widget-guru" class="text-xs opacity-70">Free Time</p>
+                <div class="w-full bg-white/20 h-1 mt-4 rounded-full overflow-hidden">
+                    <div class="bg-indigo-400 h-full w-[60%]" id="progress-mapel"></div>
+                </div>
+            </div>
+            <div class="glass-panel p-4 rounded-3xl text-white pointer-events-auto flex items-center gap-4">
+                <img id="desk-ava" src="" class="w-12 h-12 rounded-full border-2 border-white">
+                <div class="flex-1">
+                    <h4 id="desk-name" class="font-bold text-sm truncate">User</h4>
+                    <div class="flex justify-between text-[10px] mt-1 opacity-80">
+                        <span>Lvl. <span id="user-lvl">1</span></span>
+                        <span><span id="user-xp">0</span> XP</span>
+                    </div>
+                    <div class="w-full bg-black/30 h-1.5 mt-1 rounded-full">
+                        <div id="xp-bar" class="bg-yellow-400 h-full w-0 rounded-full transition-all"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute top-8 left-8 grid grid-cols-1 gap-4">
+            <div onclick="openApp('win-explorer')" class="desktop-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" class="w-12 mb-2 drop-shadow-lg">
+                <span class="text-xs font-bold bg-black/20 px-2 py-1 rounded">My Class</span>
+            </div>
+            <div onclick="openApp('win-browser')" class="desktop-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/3665/3665969.png" class="w-12 mb-2 drop-shadow-lg">
+                <span class="text-xs font-bold bg-black/20 px-2 py-1 rounded">Browser</span>
+            </div>
+            <div onclick="openApp('win-code')" class="desktop-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/1005/1005141.png" class="w-12 mb-2 drop-shadow-lg">
+                <span class="text-xs font-bold bg-black/20 px-2 py-1 rounded">VS Code Lite</span>
+            </div>
+             <div onclick="openApp('win-trash')" class="desktop-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/3496/3496417.png" class="w-12 mb-2 drop-shadow-lg">
+                <span class="text-xs font-bold bg-black/20 px-2 py-1 rounded">Recycle Bin</span>
+            </div>
+        </div>
+
+        <div class="taskbar glass-panel mb-4">
+            <button onclick="toggleStartMenu()" class="p-3 bg-white/20 rounded-xl hover:bg-white/40 transition-all mr-2">
+                <i class="fab fa-windows text-white text-xl"></i>
+            </button>
+            <div class="h-8 w-[1px] bg-white/30 mx-2"></div>
+            
+            <div onclick="openApp('win-chat')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Global Chat">
+                <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+            <div onclick="openApp('win-absensi')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Absensi">
+                <img src="https://cdn-icons-png.flaticon.com/512/2921/2921226.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+            <div onclick="openApp('win-kas')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Keuangan">
+                <img src="https://cdn-icons-png.flaticon.com/512/2482/2482618.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+             <div onclick="openApp('win-piket')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Jadwal Piket">
+                <img src="https://cdn-icons-png.flaticon.com/512/2829/2829821.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+            <div onclick="openApp('win-gallery')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Galeri Kelas">
+                <img src="https://cdn-icons-png.flaticon.com/512/3342/3342137.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+            <div onclick="openApp('win-games')" class="dock-item p-2 bg-white rounded-xl cursor-pointer shadow-lg" title="Game Center">
+                <img src="https://cdn-icons-png.flaticon.com/512/808/808439.png" class="w-8">
+                <div class="dock-dot"></div>
+            </div>
+            <div id="admin-icon" onclick="openApp('win-admin')" class="dock-item p-2 bg-indigo-600 rounded-xl cursor-pointer shadow-lg hide" title="Control Panel">
+                <i class="fas fa-cogs text-white text-xl w-8 h-8 flex items-center justify-center"></i>
+                <div class="dock-dot"></div>
+            </div>
+        </div>
+
+        <div id="start-menu" class="absolute bottom-20 left-1/2 -translate-x-1/2 w-[600px] h-[500px] glass-panel rounded-2xl hide p-8 flex flex-col z-[2000] animate__animated animate__slideInUp">
+            <div class="mb-4">
+                <input type="text" placeholder="Type here to search..." class="w-full bg-white/50 p-3 rounded-lg border-none outline-none font-bold">
+            </div>
+            <h4 class="text-xs font-bold text-slate-500 mb-4">Pinned Apps</h4>
+            <div class="grid grid-cols-6 gap-4 flex-1 content-start">
+                <div onclick="openApp('win-calculator')" class="flex flex-col items-center cursor-pointer hover:bg-white/30 p-2 rounded-lg">
+                    <i class="fas fa-calculator text-2xl text-slate-700 mb-2"></i>
+                    <span class="text-[10px]">Calc</span>
+                </div>
+                 <div onclick="openApp('win-notes')" class="flex flex-col items-center cursor-pointer hover:bg-white/30 p-2 rounded-lg">
+                    <i class="fas fa-sticky-note text-2xl text-yellow-500 mb-2"></i>
+                    <span class="text-[10px]">Notes</span>
+                </div>
+                 <div onclick="openApp('win-terminal')" class="flex flex-col items-center cursor-pointer hover:bg-white/30 p-2 rounded-lg">
+                    <i class="fas fa-terminal text-2xl text-black mb-2"></i>
+                    <span class="text-[10px]">CMD</span>
+                </div>
+                <div onclick="openApp('win-spotify')" class="flex flex-col items-center cursor-pointer hover:bg-white/30 p-2 rounded-lg">
+                    <i class="fab fa-spotify text-2xl text-green-500 mb-2"></i>
+                    <span class="text-[10px]">Spotify</span>
+                </div>
+            </div>
+            <div class="border-t border-slate-300 pt-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img id="start-ava" src="" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p id="start-name" class="text-sm font-bold text-slate-800">User</p>
+                        <p class="text-[10px] text-green-600">● Online</p>
+                    </div>
+                </div>
+                <button onclick="window.logout()" class="p-2 hover:bg-red-100 rounded text-red-500"><i class="fas fa-power-off"></i></button>
+            </div>
+        </div>
+
+        <div id="win-chat" class="window-app glass-panel flex flex-col">
+            <div class="window-header">
+                <div class="flex items-center gap-2"><i class="fas fa-comments text-indigo-500"></i> <span class="text-xs font-bold">RPL 2 Messenger</span></div>
+                <div class="flex gap-2">
+                    <button onclick="minApp('win-chat')" class="w-3 h-3 bg-yellow-400 rounded-full"></button>
+                    <button onclick="closeApp('win-chat')" class="w-3 h-3 bg-red-500 rounded-full"></button>
+                </div>
+            </div>
+            <div class="flex-1 bg-white/50 flex flex-col relative">
+                <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-3 pb-20"></div>
+                <div class="absolute bottom-0 w-full p-4 bg-white/80 backdrop-blur border-t flex gap-2">
+                    <input id="chat-in" type="text" class="flex-1 p-2 rounded-lg border bg-slate-50" placeholder="Ketik pesan...">
+                    <button onclick="sendChat()" class="bg-indigo-600 text-white px-4 rounded-lg"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-absensi" class="window-app glass-panel bg-white">
+            <div class="window-header">
+                <div class="flex items-center gap-2"><i class="fas fa-user-check text-green-500"></i> <span class="text-xs font-bold">Absensi Real-time</span></div>
+                <div class="flex gap-2">
+                    <button onclick="minApp('win-absensi')" class="w-3 h-3 bg-yellow-400 rounded-full"></button>
+                    <button onclick="closeApp('win-absensi')" class="w-3 h-3 bg-red-500 rounded-full"></button>
+                </div>
+            </div>
+            <div class="p-4 h-full overflow-y-auto">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="absen-grid"></div>
+            </div>
+        </div>
+
+        <div id="win-kas" class="window-app glass-panel bg-white">
+            <div class="window-header">
+                <div class="flex items-center gap-2"><i class="fas fa-chart-pie text-pink-500"></i> <span class="text-xs font-bold">Financial Report</span></div>
+                <button onclick="closeApp('win-kas')" class="w-3 h-3 bg-red-500 rounded-full"></button>
+            </div>
+            <div class="p-8 flex flex-col h-full">
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <p class="text-xs uppercase text-slate-400">Total Saldo</p>
+                        <h2 class="text-3xl font-black text-slate-800">Rp 2.450.000</h2>
+                    </div>
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg h-fit text-xs font-bold">Bayar Kas</button>
+                </div>
+                <div class="flex-1 relative">
+                    <canvas id="kasChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-admin" class="window-app glass-panel bg-slate-100">
+             <div class="window-header">
+                <div class="flex items-center gap-2"><i class="fas fa-cogs text-slate-700"></i> <span class="text-xs font-bold">Control Panel (Admin)</span></div>
+                <button onclick="closeApp('win-admin')" class="w-3 h-3 bg-red-500 rounded-full"></button>
+            </div>
+            <div class="p-6 grid grid-cols-2 gap-6 h-full overflow-y-auto">
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h4 class="font-bold mb-3 border-b pb-2">Set Jadwal Pelajaran</h4>
+                    <select id="adm-day" class="w-full mb-2 border p-1 rounded"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option></select>
+                    <input id="adm-mapel-1" placeholder="07:00 - Mapel 1" class="w-full mb-2 border p-1 rounded text-xs">
+                    <input id="adm-mapel-2" placeholder="09:00 - Mapel 2" class="w-full mb-2 border p-1 rounded text-xs">
+                    <input id="adm-mapel-3" placeholder="13:00 - Mapel 3" class="w-full mb-2 border p-1 rounded text-xs">
+                    <button onclick="saveSchedule()" class="w-full bg-green-500 text-white text-xs py-2 rounded">Simpan Jadwal</button>
+                </div>
+                 <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <h4 class="font-bold mb-3 border-b pb-2">Broadcast Pengumuman</h4>
+                    <textarea id="adm-news" class="w-full border p-2 rounded text-xs h-24 mb-2" placeholder="Tulis pengumuman running text..."></textarea>
+                    <button onclick="saveNews()" class="w-full bg-blue-500 text-white text-xs py-2 rounded">Kirim Broadcast</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-code" class="window-app bg-[#1e1e1e] text-white flex flex-col border border-slate-700 shadow-2xl">
+            <div class="bg-[#252526] p-2 flex justify-between items-center text-xs">
+                <span class="ml-2">main.html - Visual Studio Code Lite</span>
+                <button onclick="closeApp('win-code')" class="w-3 h-3 bg-red-500 rounded-full mr-2"></button>
+            </div>
+            <div class="flex-1 flex">
+                <div class="w-12 bg-[#333] flex flex-col items-center pt-4 gap-4 text-slate-400">
+                    <i class="fas fa-file"></i><i class="fas fa-search"></i><i class="fas fa-code-branch"></i>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <textarea class="w-full h-full bg-[#1e1e1e] text-green-400 font-mono p-4 outline-none resize-none text-sm" spellcheck="false">&lt;!-- Write your code here --&gt;
+console.log("Hello RPL 2!");</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="win-games" class="window-app glass-panel flex flex-col items-center justify-center bg-indigo-900 text-white">
+            <div class="window-header w-full absolute top-0 left-0">
+                <span class="ml-2 text-xs font-bold">Game Zone</span>
+                <button onclick="closeApp('win-games')" class="w-3 h-3 bg-red-500 rounded-full mr-2"></button>
+            </div>
+            <h1 class="text-4xl font-black mb-4">TIC TAC TOE</h1>
+            <div id="tictactoe" class="grid grid-cols-3 gap-2">
+                </div>
+            <button onclick="resetGame()" class="mt-6 px-4 py-2 bg-white text-indigo-900 font-bold rounded">Reset Game</button>
+        </div>
+
+        <div id="win-browser" class="window-app bg-white flex flex-col shadow-2xl">
+            <div class="bg-slate-100 p-2 flex items-center gap-2 border-b">
+                <div class="flex gap-1 mr-2">
+                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <input type="text" value="https://google.com" class="flex-1 bg-white border rounded-full px-3 text-xs py-1 text-slate-500" readonly>
+            </div>
+            <iframe src="https://www.bing.com/search?q=smk+coding" class="w-full h-full border-none"></iframe>
+        </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, query, limitToLast, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyCKoeMMj0-iAVb_xp998S1W3U4KU3fuFVs",
             authDomain: "web-kelaz.firebaseapp.com",
@@ -207,206 +378,307 @@
             messagingSenderId: "393212253974",
             appId: "1:393212253974:web:722ee1237a62d949536237"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- MASTER DATA (GURU & MURID) ---
-        const MURID = ["A Fabian Syah", "Abdul Wafi", "Achmad Wildan", "Ahmad Alfi", "Ahmad Azriel", "Andrea Hafshah Oktavia", "Attaya Kayla", "Cahyo Kartiko", "Farrel Alkhayri", "Karina Sakila", "Kevin Oktavian Suryana", "Khaysila", "Kinddy Putra", "M Naufal Permana", "M Reza Febriansyah", "M Rizki Fadilah Guntor", "M Rizki Mulya", "M Rizqi Mubarak", "M Sigit Maulana", "M Tegar Alyasin", "M. Refi Yanto", "Moch Farel Al Khairy", "Muhamad Daffa Alexandrio", "Muhamad Raffi Alfathir", "Muhammad Ridwan", "Raehan Syafa", "Raffa Maydiansyah", "Rafi Izatul", "Rahil Aristya Aimar", "Rama Putra", "Ranie Dwi Putri", "Revan", "Syakirah Azraa", "Three Argha Zulita", "Vino Pratama", "Vino Sigit H", "Zainal Arifin"].sort();
+        // --- CONSTANTS ---
+        const MURID = ["A Fabian Syah", "Abdul Wafi", "Achmad Wildan", "Ahmad Alfi", "Ahmad Azriel", "Andrea Hafshah Oktavia", "Attaya Kayla", "Cahyo Kartiko", "Farrel Alkhayri", "Karina Sakila", "Kevin Oktavian Suryana", "Khaysila", "Kinddy Putra", "M Naufal Permana", "M Reza Febriansyah", "M Rizki Fadilah Guntor", "M Rizki Mulya", "M Rizqi Mubarak", "M Sigit Maulana", "M Tegar Alyasin", "M. Refi Yanto", "Moch Farel Al Khairy", "Muhamad Daffa Alexandrio", "Muhamad Raffi Alfathir", "Muhammad Ridwan", "Raehan Syafa", "Raffa Maydiansyah", "Rafi Izatul", "Rahil Aristya Aimar", "Rama Putra", "Ranie Dwi Putri", "Revan", "Syakirah Azraa", "Three Argha Zulita", "Vino Pratama", "Vino Sigit H", "Zainal Arifin"];
+        const GURU = ["Bpk/Ibu B. Indonesia", "Bpk/Ibu B. Inggris", "Bpk/Ibu Produktif", "Bpk/Ibu Matematika"];
+
+        // --- OS LOGIC ---
         
-        const GURU_MAPEL = [
-            "Bpk/Ibu B. Indonesia", "Bpk/Ibu B. Inggris", "Bpk/Ibu B. Jepang", 
-            "Bpk/Ibu Matematika", "Bpk/Ibu Sejarah", "Bpk/Ibu PKN", 
-            "Bpk/Ibu PKK", "Bpk/Ibu Produktif", "Bpk/Ibu PAI", "Bpk/Ibu PJOK"
-        ];
-
-        // --- AUTH LOGIC ---
-        window.syncLoginNames = () => {
-            const role = document.getElementById('login-role').value;
-            const sel = document.getElementById('login-name');
-            sel.innerHTML = '<option disabled selected>Pilih Nama...</option>';
-            let list = [];
-            if(role === 'Walas') list = ["Wali Kelas XII RPL 2"];
-            else if(role === 'Guru') list = GURU_MAPEL;
-            else list = MURID;
-            list.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
-        };
-
-        window.doLogin = () => {
-            const r = document.getElementById('login-role').value;
-            const n = document.getElementById('login-name').value;
-            if(!r || !n) return;
-            localStorage.setItem('user_v5', JSON.stringify({ n, r }));
-            initApp();
-        };
-
-        window.logout = () => { localStorage.clear(); location.reload(); };
-
-        // --- NAVIGATION ---
-        window.nav = (p) => {
-            document.querySelectorAll('.page-content').forEach(e => e.classList.add('hide'));
-            document.querySelectorAll('.sidebar-btn').forEach(e => e.classList.remove('sidebar-active'));
-            document.getElementById('section-'+p).classList.remove('hide');
-            document.getElementById('btn-'+p).classList.add('sidebar-active');
-            document.getElementById('page-title').innerText = p.toUpperCase();
-        };
-
-        // --- INITIALIZE ---
-        function initApp() {
-            const user = JSON.parse(localStorage.getItem('user_v5'));
-            if(!user) return;
-            document.getElementById('view-login').classList.add('hide');
-            document.getElementById('view-app').classList.remove('hide');
-            document.getElementById('u-name').innerText = user.n;
-            document.getElementById('u-role').innerText = user.r;
+        // Boot Sequence
+        window.onload = () => {
+            const log = document.getElementById('boot-log');
+            const msgs = [
+                "Initializing Kernel v4.0...", "Loading Firebase Modules...", 
+                "Mounting File System...", "Checking User Permissions...",
+                "Loading UI Assets...", "Starting Desktop Environment...", "System Ready."
+            ];
+            let i = 0;
+            const int = setInterval(() => {
+                if(i < msgs.length) {
+                    log.innerHTML += `> ${msgs[i]}<br>`;
+                    log.scrollTop = log.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(int);
+                    setTimeout(() => {
+                        document.getElementById('boot-screen').classList.add('hide');
+                        checkSession();
+                    }, 500);
+                }
+            }, 300);
             
-            const ava = localStorage.getItem('ava_'+user.n);
-            document.getElementById('my-ava').src = ava || `https://ui-avatars.com/api/?name=${user.n}`;
+            document.getElementById('boot-bar').style.width = "100%";
+            initDraggable();
+        };
 
-            if(user.r === 'Walas') document.getElementById('admin-gate').classList.remove('hide');
-            if(user.r === 'Ketua Kelas') document.getElementById('poll-ctrl').classList.remove('hide');
-
-            startClocks();
-            syncData();
-            nav('dash');
+        function initDraggable() {
+            $(".window-app").draggable({ handle: ".window-header", containment: "body", stack: ".window-app" });
         }
 
-        function startClocks() {
+        // Login System
+        window.syncLoginNames = () => {
+            const r = document.getElementById('login-role').value;
+            const s = document.getElementById('login-name');
+            s.innerHTML = '<option disabled selected>Pilih Nama...</option>';
+            let list = r === 'Walas' ? ["Wali Kelas"] : (r === 'Guru' ? GURU : MURID);
+            list.forEach(x => s.innerHTML += `<option>${x}</option>`);
+        };
+
+        window.bootSystem = () => {
+            const r = document.getElementById('login-role').value;
+            const n = document.getElementById('login-name').value;
+            if(!r || !n) return Swal.fire('Error', 'Pilih Role & Nama!', 'error');
+            
+            const user = { n, r, xp: 0, lvl: 1 };
+            localStorage.setItem('os_user', JSON.stringify(user));
+            
+            // Play Start Sound (Optional)
+            // let audio = new Audio('https://www.myinstants.com/media/sounds/windows-xp-startup.mp3');
+            // audio.play();
+
+            checkSession();
+        };
+
+        function checkSession() {
+            const u = JSON.parse(localStorage.getItem('os_user'));
+            if(!u) {
+                document.getElementById('lock-screen').classList.remove('hide');
+            } else {
+                document.getElementById('lock-screen').classList.add('hide');
+                document.getElementById('desktop').classList.remove('hide');
+                setupUser(u);
+                startClock();
+            }
+        }
+
+        function setupUser(u) {
+            document.getElementById('desk-name').innerText = u.n;
+            document.getElementById('start-name').innerText = u.n;
+            document.getElementById('user-lvl').innerText = u.lvl;
+            document.getElementById('user-xp').innerText = u.xp;
+            
+            const ava = `https://ui-avatars.com/api/?name=${u.n}&background=random`;
+            document.getElementById('desk-ava').src = ava;
+            document.getElementById('start-ava').src = ava;
+            document.getElementById('lock-ava').src = ava;
+
+            if(u.r === 'Walas' || u.r === 'Guru') {
+                document.getElementById('admin-icon').classList.remove('hide');
+            }
+        }
+
+        window.logout = () => {
+            localStorage.removeItem('os_user');
+            location.reload();
+        };
+
+        // --- WINDOW MANAGER ---
+        let zIndex = 100;
+        
+        window.openApp = (id) => {
+            const win = document.getElementById(id);
+            win.classList.remove('minimized');
+            win.classList.add('active');
+            win.style.zIndex = ++zIndex;
+            document.getElementById('start-menu').classList.add('hide');
+            
+            // Specific Init
+            if(id === 'win-kas') initChart();
+            if(id === 'win-games') resetGame();
+            
+            // Add XP
+            addXP(5);
+        };
+
+        window.closeApp = (id) => {
+            const win = document.getElementById(id);
+            win.classList.remove('active');
+            setTimeout(() => {
+                win.style.top = "50%";
+                win.style.left = "50%";
+            }, 300);
+        };
+
+        window.minApp = (id) => {
+            document.getElementById(id).classList.add('minimized');
+        };
+
+        window.toggleStartMenu = () => {
+            document.getElementById('start-menu').classList.toggle('hide');
+        };
+
+        // --- CORE FEATURES LOGIC ---
+
+        // 1. Clock & Widget
+        function startClock() {
             setInterval(() => {
                 const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                updateSmartMapel(now);
+                document.getElementById('jam-digital').innerText = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                document.getElementById('tanggal-digital').innerText = now.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
             }, 1000);
         }
 
-        // --- SMART MAPEL LOGIC ---
-        function updateSmartMapel(now) {
-            const hour = now.getHours();
-            const min = now.getMinutes();
-            const val = hour * 100 + min;
-            let m = "Jam Bebas", t = "--:--";
-
-            if(val >= 700 && val < 1000) { m = "Produktif RPL (Coding)"; t = "07:00 - 10:00"; }
-            else if(val >= 1000 && val < 1200) { m = "Bahasa Inggris"; t = "10:00 - 12:00"; }
-
-            document.getElementById('live-mapel').innerText = m;
-            document.getElementById('live-jam').innerText = t;
-        }
-
-        // --- CHAT MODERASI (Newest at Bottom) ---
-        window.pushChat = () => {
-            const u = JSON.parse(localStorage.getItem('user_v5'));
+        // 2. Chat System
+        window.sendChat = () => {
+            const u = JSON.parse(localStorage.getItem('os_user'));
             const t = document.getElementById('chat-in').value;
             if(!t) return;
-            push(ref(db, 'chats_v5'), {
-                n: u.n, r: u.r, t: t,
-                ava: localStorage.getItem('ava_'+u.n) || '',
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                ts: Date.now()
+            push(ref(db, 'os_chat'), {
+                n: u.n, r: u.r, t: t, ts: Date.now(),
+                time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})
             });
             document.getElementById('chat-in').value = '';
+            addXP(2);
         };
 
-        window.delChat = (id) => {
-            if(confirm('Hapus chat ini?')) remove(ref(db, 'chats_v5/' + id));
-        };
-
-        // --- POLLING LOGIC ---
-        window.addPoll = () => {
-            const q = document.getElementById('poll-q').value;
-            if(!q) return;
-            push(ref(db, 'polls_v5'), { q, creator: 'Ketua Kelas' });
-            document.getElementById('poll-q').value = '';
-        };
-
-        window.vote = (id, choice) => {
-            const u = JSON.parse(localStorage.getItem('user_v5'));
-            if(u.r === 'Walas' || u.r === 'Guru') return alert('Hanya Murid/Perangkat yang boleh voting!');
-            set(ref(db, `polls_v5/${id}/votes/${u.n.replace(/\s/g, '_')}`), choice);
-        };
-
-        // --- SYNC ENGINE ---
-        function syncData() {
-            const user = JSON.parse(localStorage.getItem('user_v5'));
-
-            onValue(query(ref(db, 'chats_v5'), limitToLast(50)), (snap) => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML = '';
-                snap.forEach(c => {
-                    const m = c.val();
-                    const isMe = m.n === user.n;
-                    const mod = (user.r === 'Walas' || user.r === 'Ketua Kelas');
-                    const ava = m.ava || `https://ui-avatars.com/api/?name=${m.n}`;
-
-                    box.innerHTML += `
-                        <div class="flex gap-4 ${isMe ? 'flex-row-reverse' : ''} animate__animated animate__fadeInUp">
-                            <img src="${ava}" class="w-12 h-12 rounded-2xl shadow-md border-2 border-white">
-                            <div class="max-w-[70%] relative group">
-                                <p class="text-[9px] font-black uppercase text-slate-400 mb-1 ${isMe ? 'text-right' : ''}">${m.n} • ${m.time}</p>
-                                <div class="p-5 rounded-[2rem] ${isMe ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border rounded-tl-none'} shadow-sm">
-                                    <p class="text-sm font-bold">${m.t}</p>
-                                </div>
-                                ${mod ? `<button onclick="delChat('${c.key}')" class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-all shadow-lg">✕</button>` : ''}
-                            </div>
-                        </div>`;
-                });
-                box.scrollTop = box.scrollHeight;
+        onValue(query(ref(db, 'os_chat'), limitToLast(20)), (snap) => {
+            const b = document.getElementById('chat-box');
+            b.innerHTML = '';
+            const u = JSON.parse(localStorage.getItem('os_user') || '{}');
+            snap.forEach(c => {
+                const d = c.val();
+                const me = d.n === u.n;
+                b.innerHTML += `
+                    <div class="flex flex-col ${me ? 'items-end' : 'items-start'}">
+                        <div class="text-[10px] text-slate-500 mb-1 font-bold">${d.n} <span class="font-normal">(${d.r})</span></div>
+                        <div class="${me ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border rounded-tl-none'} p-3 rounded-xl shadow-sm text-sm max-w-[80%]">
+                            ${d.t}
+                        </div>
+                        <span class="text-[9px] text-slate-400 mt-1">${d.time}</span>
+                    </div>`;
             });
+            b.scrollTop = b.scrollHeight;
+        });
 
-            onValue(ref(db, 'polls_v5'), (snap) => {
-                const box = document.getElementById('poll-list');
-                box.innerHTML = '';
-                snap.forEach(c => {
-                    const p = c.val();
-                    const votes = p.votes ? Object.values(p.votes) : [];
-                    const yes = votes.filter(v => v === 'Y').length;
-                    const no = votes.filter(v => v === 'N').length;
-                    box.innerHTML += `
-                        <div class="bento bg-slate-50">
-                            <h4 class="font-black text-xl mb-6">${p.q}</h4>
-                            <div class="flex gap-3 mb-6">
-                                <button onclick="vote('${c.key}','Y')" class="flex-1 py-4 bg-emerald-500 text-white rounded-2xl font-black text-xs">SETUJU (${yes})</button>
-                                <button onclick="vote('${c.key}','N')" class="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-xs">TIDAK (${no})</button>
-                            </div>
-                            <div class="h-2 bg-slate-200 rounded-full overflow-hidden flex">
-                                <div class="bg-emerald-500 h-full" style="width: ${yes/(yes+no||1)*100}%"></div>
-                                <div class="bg-red-500 h-full" style="width: ${no/(yes+no||1)*100}%"></div>
-                            </div>
-                        </div>`;
-                });
+        // 3. Absensi
+        onValue(ref(db, 'os_absen'), (snap) => {
+            const d = snap.val() || {};
+            const g = document.getElementById('absen-grid');
+            g.innerHTML = MURID.map(m => {
+                const safe = m.replace(/[.#$/[\]]/g, '_');
+                const st = d[safe] || 'Alpha';
+                let color = 'bg-red-100 text-red-600 border-red-200';
+                if(st === 'Hadir') color = 'bg-green-100 text-green-600 border-green-200';
+                if(st === 'Sakit') color = 'bg-yellow-100 text-yellow-600 border-yellow-200';
+                if(st === 'Izin') color = 'bg-blue-100 text-blue-600 border-blue-200';
+                
+                return `
+                <div class="p-2 rounded border ${color} flex justify-between items-center cursor-pointer hover:scale-105 transition-transform" onclick="setAbsen('${safe}')">
+                    <span class="text-[10px] font-bold truncate w-20">${m}</span>
+                    <span class="text-[10px] font-black uppercase">${st[0]}</span>
+                </div>`;
+            }).join('');
+        });
+
+        window.setAbsen = (name) => {
+            const u = JSON.parse(localStorage.getItem('os_user'));
+            if(u.r === 'Murid') return Swal.fire('Akses Ditolak', 'Hanya Pengurus Kelas!', 'warning');
+            
+            Swal.fire({
+                title: 'Set Absen', input: 'select',
+                inputOptions: { 'Hadir': 'Hadir', 'Sakit': 'Sakit', 'Izin': 'Izin', 'Alpha': 'Alpha' },
+                showCancelButton: true
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    set(ref(db, `os_absen/${name}`), res.value);
+                    addXP(10);
+                }
             });
+        };
 
-            // Absensi Sync (Sesuai List 37 Murid)
-            onValue(ref(db, 'absen_v5'), (snap) => {
-                const data = snap.val() || {};
-                const grid = document.getElementById('section-absen');
-                grid.innerHTML = MURID.map(m => {
-                    const k = m.replace(/\s/g, '_');
-                    const s = data[k] || 'B';
-                    const canE = ['Walas','Sekretaris','Ketua Kelas'].includes(user.r);
-                    return `
-                        <div class="bento !p-4 flex justify-between items-center">
-                            <span class="text-[10px] font-black">${m}</span>
-                            <div class="flex gap-1">
-                                ${['H','S','I','A'].map(o => `<button onclick="${canE ? `set(ref(db,'absen_v5/${k}'),'${o}')` : ''}" class="w-8 h-8 rounded-lg text-[9px] font-black ${s===o?'bg-indigo-600 text-white shadow-lg':'bg-slate-100 text-slate-300'}">${o}</button>`).join('')}
-                            </div>
-                        </div>`;
-                }).join('');
+        // 4. Kas Chart
+        function initChart() {
+            const ctx = document.getElementById('kasChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                    datasets: [{
+                        label: 'Pemasukan Kas',
+                        data: [500000, 800000, 1200000, 1500000, 2000000, 2450000],
+                        borderColor: '#4f46e5', tension: 0.4, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.1)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
-        // Avatar Upload
-        document.getElementById('up-ava').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const user = JSON.parse(localStorage.getItem('user_v5'));
-                localStorage.setItem('ava_'+user.n, ev.target.result);
-                document.getElementById('my-ava').src = ev.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
+        // 5. Gamification (XP System)
+        function addXP(amount) {
+            const u = JSON.parse(localStorage.getItem('os_user'));
+            u.xp += amount;
+            if(u.xp > u.lvl * 100) {
+                u.lvl++;
+                u.xp = 0;
+                Swal.fire({
+                    title: 'LEVEL UP!',
+                    text: `Selamat! Anda naik ke Level ${u.lvl}`,
+                    icon: 'success',
+                    timer: 2000, showConfirmButton: false,
+                    backdrop: `rgba(0,0,123,0.4) url("https://media.giphy.com/media/d2Z8k6m3z6f8/giphy.gif") left top no-repeat`
+                });
+            }
+            localStorage.setItem('os_user', JSON.stringify(u));
+            setupUser(u);
+            
+            // Visualize Bar
+            const pct = (u.xp / (u.lvl * 100)) * 100;
+            document.getElementById('xp-bar').style.width = pct + '%';
+        }
 
-        initApp();
+        // 6. Game (Tic Tac Toe)
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        
+        window.resetGame = () => {
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            renderBoard();
+        };
+        
+        function renderBoard() {
+            const div = document.getElementById('tictactoe');
+            div.innerHTML = '';
+            gameBoard.forEach((cell, i) => {
+                div.innerHTML += `<div onclick="move(${i})" class="w-20 h-20 bg-indigo-700 rounded flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-indigo-600">${cell}</div>`;
+            });
+        }
+        
+        window.move = (i) => {
+            if(gameBoard[i] === '') {
+                gameBoard[i] = currentPlayer;
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                renderBoard();
+                checkWin();
+            }
+        };
+
+        function checkWin() {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            wins.forEach(c => {
+                if(gameBoard[c[0]] && gameBoard[c[0]] === gameBoard[c[1]] && gameBoard[c[0]] === gameBoard[c[2]]) {
+                    Swal.fire('GAME OVER', `Pemenang: ${gameBoard[c[0]]}`, 'success');
+                    addXP(50);
+                    resetGame();
+                }
+            });
+        }
+
+        // 7. Admin Control
+        window.saveSchedule = () => {
+            const d = document.getElementById('adm-day').value;
+            const s = [
+                document.getElementById('adm-mapel-1').value,
+                document.getElementById('adm-mapel-2').value,
+                document.getElementById('adm-mapel-3').value
+            ];
+            set(ref(db, `os_config/schedule/${d}`), s);
+            Swal.fire('Sukses', 'Jadwal tersimpan!', 'success');
+        };
+
     </script>
 </body>
 </html>
