@@ -3,118 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartClass - Digital Learning</title>
+    <title>SmartSchool ERP v.9.0 - Extreme Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .modal-active { display: flex !important; }
-        .hidden { display: none; }
-        .active-nav { @apply bg-indigo-700 text-white shadow-md; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
+        .sidebar-item.active { @apply bg-indigo-600 text-white shadow-lg shadow-indigo-200; }
+        .hide { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-[#F8FAFC] text-slate-900">
 
-    <div id="landing-page" class="min-h-screen flex flex-col">
-        <nav class="p-6 flex justify-between items-center bg-white shadow-sm">
-            <h1 class="text-2xl font-bold text-indigo-700 underline decoration-indigo-300">SmartClass.</h1>
-            <button onclick="toggleModal(true)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-semibold transition">
-                Masuk
-            </button>
+    <div id="landing-page" class="relative overflow-hidden min-h-screen">
+        <nav class="flex justify-between items-center p-6 container mx-auto relative z-10">
+            <div class="text-2xl font-extrabold tracking-tighter text-indigo-600">SMART<span class="text-slate-900">ERP.</span></div>
+            <button onclick="toggleModal('login-modal', true)" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-indigo-700 transition">Portal Login</button>
         </nav>
 
-        <main class="flex-1 flex flex-col md:flex-row items-center justify-center p-10 gap-10">
-            <div class="max-w-xl space-y-6 text-center md:text-left">
-                <h2 class="text-5xl md:text-6xl font-extrabold text-slate-800 leading-tight">
-                    Kelola Kelas <span class="text-indigo-600">Lebih Modern</span> & Praktis.
-                </h2>
-                <p class="text-gray-500 text-lg">
-                    Sistem manajemen sekolah terintegrasi untuk SD, SMP, hingga SMK. Pantau absensi, jadwal, dan nilai dalam satu genggaman.
-                </p>
-                <div class="flex gap-4 justify-center md:justify-start">
-                    <button onclick="toggleModal(true)" class="bg-indigo-600 text-white px-8 py-3 rounded-lg shadow-lg hover:translate-y-1 transition">Mulai Sekarang</button>
-                    <button class="border border-indigo-200 text-indigo-600 px-8 py-3 rounded-lg hover:bg-indigo-50 transition">Lihat Demo</button>
+        <section class="container mx-auto px-6 py-20 flex flex-col md:flex-row items-center relative z-10">
+            <div class="md:w-1/2 space-y-8">
+                <span class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-bold tracking-wide uppercase">Sistem Sekolah Terintegrasi</span>
+                <h1 class="text-6xl md:text-7xl font-extrabold text-slate-900 leading-[1.1]">Manajemen Sekolah <span class="text-indigo-600 italic">Level Extreme.</span></h1>
+                <p class="text-lg text-slate-500 max-w-lg">Dari absensi fingerprint hingga laporan keuangan real-time. Satu dashboard untuk ribuan kemungkinan.</p>
+                <div class="flex gap-4">
+                    <button onclick="toggleModal('login-modal', true)" class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition">Coba Sekarang</button>
                 </div>
             </div>
-            <div class="hidden md:block">
-                <img src="https://illustrations.popsy.co/amber/school-lunch.svg" alt="School Illustration" class="w-[450px]">
+            <div class="md:w-1/2 mt-10 md:mt-0 relative">
+                <div class="absolute -top-10 -right-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+                <img src="https://illustrations.popsy.co/indigo/work-from-home.svg" class="relative z-10 w-full animate-float">
             </div>
-        </main>
+        </section>
     </div>
 
-    <div id="login-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[100] p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 relative shadow-2xl scale-95 transition-all">
-            <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button>
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hide items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-[450px] rounded-[2rem] p-10 shadow-2xl relative">
+            <button onclick="toggleModal('login-modal', false)" class="absolute top-6 right-6 text-slate-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">Welcome Back</h2>
+            <p class="text-slate-500 mb-8">Login untuk mengakses modul akademik anda.</p>
             
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-lock text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold">Selamat Datang Kembali</h3>
-                <p class="text-gray-400 text-sm">Gunakan email sekolah untuk login</p>
-            </div>
-
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <div>
-                    <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                    <label class="text-sm font-bold text-slate-700 block mb-2">Email Address</label>
+                    <input type="email" id="email" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition" placeholder="admin@sekolah.id">
                 </div>
                 <div>
-                    <input type="password" id="password" placeholder="Password" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                    <label class="text-sm font-bold text-slate-700 block mb-2">Secret Password</label>
+                    <input type="password" id="password" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition" placeholder="••••••••">
                 </div>
-                <button onclick="handleLogin()" id="btn-login" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 active:scale-95 transition">
-                    Login Sekarang
-                </button>
-                <p id="error-msg" class="text-red-500 text-sm text-center hidden italic">Email/Password salah, Bang!</p>
+                <button onclick="authAction()" id="btn-auth" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-extrabold text-lg shadow-lg hover:bg-indigo-700 active:scale-[0.98] transition">AUTHENTICATION</button>
+                <p id="auth-err" class="text-red-500 text-center text-sm font-bold hide">Invalid Credentials!</p>
             </div>
         </div>
     </div>
 
-    <div id="dashboard-page" class="hidden min-h-screen">
-        <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r hidden md:block z-50">
-            <div class="p-6 text-xl font-bold text-indigo-700">🏢 SmartClass.</div>
-            <nav class="p-4 space-y-2">
-                <button onclick="navigate('home')" id="nav-home" class="w-full p-3 rounded-xl flex items-center gap-3 active-nav transition">
-                    <i class="fas fa-th-large"></i> Dashboard
+    <div id="app-shell" class="hide min-h-screen">
+        <aside class="fixed left-0 top-0 h-screen w-72 bg-white border-r border-slate-200 z-50 p-6 hidden md:block">
+            <div class="text-xl font-extrabold mb-10 flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg"></div> SMART ERP
+            </div>
+            
+            <nav class="space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-4">Menu Utama</p>
+                <button onclick="switchModule('dashboard')" id="m-dashboard" class="sidebar-item active w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">
+                    <i class="fas fa-chart-pie w-5"></i> Dashboard
                 </button>
-                <button onclick="navigate('siswa')" id="nav-siswa" class="w-full p-3 rounded-xl flex items-center gap-3 text-gray-500 hover:bg-gray-100 transition">
-                    <i class="fas fa-users"></i> Data Siswa
+                <button onclick="switchModule('akademik')" id="m-akademik" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition">
+                    <i class="fas fa-graduation-cap w-5"></i> Akademik
                 </button>
-                <button onclick="logout()" class="w-full p-3 rounded-xl flex items-center gap-3 text-red-500 hover:bg-red-50 transition mt-10">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <button onclick="switchModule('keuangan')" id="m-keuangan" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition">
+                    <i class="fas fa-wallet w-5"></i> Keuangan
+                </button>
+                <button onclick="switchModule('inventaris')" id="m-inventaris" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition">
+                    <i class="fas fa-box w-5"></i> Inventaris
+                </button>
+
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-8 mb-2 px-4">Sistem</p>
+                <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition">
+                    <i class="fas fa-power-off w-5"></i> Logout
                 </button>
             </nav>
         </aside>
 
-        <main class="md:ml-64 p-8">
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-800" id="welcome-text">Halo!</h2>
-                    <p class="text-gray-500" id="role-text">Role: Unknown</p>
+        <main class="md:ml-72 p-8 lg:p-12">
+            <header class="flex justify-between items-center mb-10">
+                <div id="module-header">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Main Console</h2>
+                    <p class="text-slate-500">Real-time system monitoring</p>
                 </div>
-                <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full border shadow-sm">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold" id="avatar">U</div>
-                    <span id="user-display" class="font-medium">User</span>
+                <div class="flex items-center gap-6">
+                    <div class="text-right">
+                        <p class="font-extrabold text-slate-900" id="session-name">User Name</p>
+                        <p class="text-xs font-bold text-indigo-500 uppercase tracking-tighter" id="session-role">Role</p>
+                    </div>
+                    <img id="session-avatar" src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" class="w-12 h-12 rounded-2xl shadow-lg">
                 </div>
             </header>
 
-            <div id="page-content" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[400px]">
+            <div id="module-container" class="animate-in fade-in duration-500">
                 </div>
         </main>
     </div>
 
     <script>
-        // --- LOGIC UI ---
-        function toggleModal(show) {
-            const modal = document.getElementById('login-modal');
-            if(show) modal.classList.add('modal-active');
-            else modal.classList.remove('modal-active');
+        // --- 1. MODUL DATABASE (Ribuan Fitur Simpan di Sini) ---
+        const modules = {
+            dashboard: (data) => `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="glass p-8 rounded-[2rem] shadow-sm border-l-8 border-indigo-600">
+                        <span class="text-slate-400 text-xs font-bold uppercase">Online Students</span>
+                        <h3 class="text-4xl font-extrabold mt-1">1,402</h3>
+                    </div>
+                    <div class="glass p-8 rounded-[2rem] shadow-sm border-l-8 border-emerald-500">
+                        <span class="text-slate-400 text-xs font-bold uppercase">Today's Revenue</span>
+                        <h3 class="text-4xl font-extrabold mt-1">Rp 12.4M</h3>
+                    </div>
+                    <div class="glass p-8 rounded-[2rem] shadow-sm border-l-8 border-amber-500">
+                        <span class="text-slate-400 text-xs font-bold uppercase">System Health</span>
+                        <h3 class="text-4xl font-extrabold mt-1 text-amber-600">99.9%</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl">
+                    <h4 class="text-xl font-extrabold mb-6">Recent System Logs</h4>
+                    <div class="space-y-4">
+                        ${[1,2,3].map(i => `<div class="p-4 bg-slate-50 rounded-2xl flex justify-between"><span>Siswa ID #90${i} Absen Masuk</span> <span class="text-slate-400 text-xs">2 mins ago</span></div>`).join('')}
+                    </div>
+                </div>
+            `,
+            akademik: `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="bg-indigo-600 p-8 rounded-[2rem] text-white">
+                            <h3 class="text-2xl font-bold">Kurikulum Merdeka v2</h3>
+                            <p class="opacity-80 mt-2">Manage RPP, Silabus, dan Modul Ajar otomatis.</p>
+                            <button class="mt-6 bg-white text-indigo-600 px-6 py-2 rounded-xl font-bold">Buka Editor</button>
+                        </div>
+                        <div class="bg-white p-8 rounded-[2rem] border shadow-sm">
+                            <h4 class="font-bold mb-4 italic">E-Rapor Digital</h4>
+                            <p class="text-slate-500 text-sm">Status: 80% Guru sudah input nilai Semester Ganjil.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2rem] border shadow-sm">
+                        <h4 class="font-bold mb-4">Live Video Learning</h4>
+                        <div class="aspect-video bg-slate-900 rounded-2xl flex items-center justify-center text-white">
+                            <i class="fas fa-play-circle text-5xl opacity-20"></i>
+                        </div>
+                    </div>
+                </div>
+            `,
+            keuangan: `
+                <div class="bg-white p-10 rounded-[2.5rem] border shadow-2xl">
+                    <h3 class="text-2xl font-extrabold mb-8">Cash Flow Analysis</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="p-6 bg-emerald-50 text-emerald-700 rounded-3xl">
+                            <p class="text-xs font-bold uppercase">Inflow</p>
+                            <p class="text-2xl font-extrabold">Rp 450.000.000</p>
+                        </div>
+                        <div class="p-6 bg-red-50 text-red-700 rounded-3xl">
+                            <p class="text-xs font-bold uppercase">Outflow</p>
+                            <p class="text-2xl font-extrabold">Rp 120.000.000</p>
+                        </div>
+                    </div>
+                    <button class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold italic underline decoration-indigo-500">Download Financial Report (.PDF)</button>
+                </div>
+            `,
+            inventaris: `
+                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    ${['Lab Komputer', 'Perpustakaan', 'Gedung Olahraga', 'Gudang'].map(loc => `
+                        <div class="p-6 bg-white border rounded-3xl hover:border-indigo-500 transition cursor-pointer">
+                            <i class="fas fa-map-marker-alt text-indigo-600 mb-3"></i>
+                            <p class="font-bold">${loc}</p>
+                            <p class="text-xs text-slate-400">240+ Items tracked</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `
+        };
+
+        // --- 2. AUTH & CORE LOGIC ---
+        function toggleModal(id, show) {
+            const el = document.getElementById(id);
+            if(show) el.classList.remove('hide'), el.classList.add('flex');
+            else el.classList.add('hide'), el.classList.remove('flex');
         }
 
-        async function handleLogin() {
+        async function authAction() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const btn = document.getElementById('btn-login');
+            const btn = document.getElementById('btn-auth');
             
-            btn.innerText = "Processing...";
+            btn.innerText = "VERIFYING...";
             
             try {
                 const res = await fetch('/api/login', {
@@ -125,67 +205,53 @@
                 const data = await res.json();
 
                 if(data.success) {
-                    localStorage.setItem('user', JSON.stringify(data));
-                    showApp();
+                    localStorage.setItem('extreme_session', JSON.stringify(data));
+                    renderApp();
                 } else {
-                    document.getElementById('error-msg').classList.remove('hidden');
-                    btn.innerText = "Login Sekarang";
+                    document.getElementById('auth-err').classList.remove('hide');
+                    btn.innerText = "AUTHENTICATION";
                 }
-            } catch(e) { alert("Cek koneksi API!"); }
-        }
-
-        function showApp() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('login-modal').classList.remove('modal-active');
-            document.getElementById('dashboard-page').classList.remove('hidden');
-            
-            document.getElementById('welcome-text').innerText = `Selamat Datang, ${user.name}!`;
-            document.getElementById('role-text').innerText = `Akses: ${user.role}`;
-            document.getElementById('user-display').innerText = user.name;
-            document.getElementById('avatar').innerText = user.name[0];
-
-            // Proteksi Role
-            if(user.role === 'siswa') document.getElementById('nav-siswa').style.display = 'none';
-            
-            navigate('home');
-        }
-
-        function navigate(page) {
-            const content = document.getElementById('page-content');
-            
-            // UI Toggle Class
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-nav', 'text-white'));
-            document.getElementById(`nav-${page}`).classList.add('active-nav');
-
-            if(page === 'home') {
-                content.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 bg-indigo-600 rounded-2xl text-white">
-                            <h4 class="text-lg opacity-80 uppercase tracking-wider">Total Siswa</h4>
-                            <p class="text-4xl font-bold">128 Siswa</p>
-                        </div>
-                        <div class="p-6 bg-slate-800 rounded-2xl text-white">
-                            <h4 class="text-lg opacity-80 uppercase tracking-wider">Status Absensi</h4>
-                            <p class="text-4xl font-bold">Aktif</p>
-                        </div>
-                    </div>
-                `;
-            } else if (page === 'siswa') {
-                content.innerHTML = `<h3 class="text-xl font-bold mb-4">Daftar Siswa Aktif</h3><p>Memanggil data dari api/siswa.js...</p>`;
-                loadSiswa();
+            } catch(e) { 
+                alert("Backend belum jalan, Bang! Pake 'vercel dev'");
+                btn.innerText = "AUTHENTICATION";
             }
         }
 
-        async function loadSiswa() {
-            const res = await fetch('/api/siswa');
-            const data = await res.json();
-            document.getElementById('page-content').innerHTML = `
-                <table class="w-full text-left">
-                    <tr class="border-b text-gray-400"> <th class="py-4">Nama</th> <th>Status</th> </tr>
-                    ${data.map(s => `<tr class="border-b"> <td class="py-4">${s.nama}</td> <td><span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-bold">${s.status}</span></td> </tr>`).join('')}
-                </table>
-            `;
+        function renderApp() {
+            const user = JSON.parse(localStorage.getItem('extreme_session'));
+            document.getElementById('landing-page').classList.add('hide');
+            toggleModal('login-modal', false);
+            document.getElementById('app-shell').classList.remove('hide');
+            
+            document.getElementById('session-name').innerText = user.name;
+            document.getElementById('session-role').innerText = user.role;
+            document.getElementById('session-avatar').src = `https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`;
+
+            // Proteksi Role Extreme
+            if(user.role === 'siswa') {
+                document.getElementById('m-keuangan').classList.add('hide');
+                document.getElementById('m-inventaris').classList.add('hide');
+            }
+
+            switchModule('dashboard');
+        }
+
+        function switchModule(modId) {
+            const container = document.getElementById('module-container');
+            const headerTitle = document.querySelector('#module-header h2');
+            
+            // UI Sidebar Update
+            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active', 'text-white'));
+            document.getElementById(`m-${modId}`).classList.add('active');
+
+            // Render Modul
+            if(typeof modules[modId] === 'function') {
+                container.innerHTML = modules[modId]();
+            } else {
+                container.innerHTML = modules[modId];
+            }
+            
+            headerTitle.innerText = modId.charAt(0).toUpperCase() + modId.slice(1) + " Module";
         }
 
         function logout() {
@@ -193,8 +259,8 @@
             location.reload();
         }
 
-        // Check Session
-        if(localStorage.getItem('user')) showApp();
+        // Check Login
+        if(localStorage.getItem('extreme_session')) renderApp();
     </script>
 </body>
 </html>
