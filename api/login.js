@@ -1,35 +1,25 @@
 function authLogin() {
-    const userEmail = document.getElementById('log-user').value; // Masukkan Nama/Email
+    const user = document.getElementById('log-user').value;
     const pass = document.getElementById('log-pass').value;
 
-    // Cari di Database Siswa (DATA_SISWA ada di api/siswa.js)
-    const foundSiswa = DATA_SISWA.find(s => 
-        (s.nama.toLowerCase() === userEmail.toLowerCase() || s.email === userEmail) && s.pass === pass
-    );
-
-    // Cek jika dia Admin/Guru (Master Access)
-    if(userEmail === "admin" && pass === "123") {
-        sessionStorage.setItem('userRole', 'Admin');
-        sessionStorage.setItem('userKelas', 'ALL');
-        masukDashboard();
-        return;
+    if(user === "admin" && pass === "123") {
+        localStorage.setItem('userRole', 'Admin');
+        localStorage.setItem('userName', 'Super Admin');
+        return masukApp();
     }
 
-    if(foundSiswa) {
-        sessionStorage.setItem('userName', foundSiswa.nama);
-        sessionStorage.setItem('userRole', foundSiswa.role); // Ketua Kelas, Murid, dll
-        sessionStorage.setItem('userKelas', foundSiswa.kelas);
-        masukDashboard();
+    const found = DATA_SISWA.find(s => s.nama.toLowerCase() === user.toLowerCase() && s.pass === pass);
+    if(found) {
+        localStorage.setItem('userRole', found.role);
+        localStorage.setItem('userName', found.nama);
+        masukApp();
     } else {
-        alert("🚨 Akun tidak ditemukan di kelas manapun!");
+        alert("Login Gagal! Gunakan Nama Lengkap & pass 'siswa123'");
     }
 }
 
-function masukDashboard() {
+function masukApp() {
     document.getElementById('login-view').classList.add('hide');
     document.getElementById('app-view').classList.remove('hide');
-    
-    // Tampilkan Menu Berdasarkan ROLE
-    filterMenuByRole();
-    showSiswa(); // Default page
+    showSiswa();
 }
