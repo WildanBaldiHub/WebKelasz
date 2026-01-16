@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartSchool ERP - Live Sync</title>
+    <title>SmartSchool ERP - Fixed & Live</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; transition: all 0.3s ease; }
         .hide { display: none !important; }
         .sidebar-link.active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-100; }
         .bg-main { background: radial-gradient(circle at top right, #4f46e5, #1e1b4b); }
         .card { @apply bg-white rounded-[2rem] border border-slate-100 shadow-sm p-6; }
-        .btn-primary { @apply bg-indigo-600 text-white px-6 py-3 rounded-xl font-black hover:bg-indigo-700 transition active:scale-95 text-[10px] uppercase tracking-widest; }
+        .btn-primary { @apply bg-indigo-600 text-white px-6 py-3 rounded-xl font-black hover:bg-indigo-700 transition active:scale-95 text-[10px] uppercase tracking-widest cursor-pointer; }
+        select, button { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -40,6 +41,7 @@
                     <option value="" disabled selected>Pilih Nama...</option>
                 </select>
                 <button onclick="handleLogin()" class="w-full btn-primary !py-5 !text-xs">Buka Dashboard</button>
+                <button onclick="location.reload()" class="w-full text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Batal</button>
             </div>
         </div>
     </div>
@@ -61,7 +63,7 @@
                     <i class="fas fa-wallet w-6"></i> Kas
                 </button>
             </nav>
-            <button onclick="location.reload()" class="p-4 text-red-500 font-black text-xs flex items-center gap-2"><i class="fas fa-power-off"></i> KELUAR</button>
+            <button onclick="logout()" class="p-4 text-red-500 font-black text-xs flex items-center gap-2 uppercase tracking-widest"><i class="fas fa-power-off"></i> Keluar</button>
         </aside>
 
         <main class="ml-64 p-10 w-full">
@@ -78,163 +80,227 @@
 
             <div id="content-area">
                 <section id="section-dash" class="page-content hide grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card bg-indigo-600 text-white">
+                    <div class="card bg-indigo-600 text-white border-0 shadow-xl shadow-indigo-100">
                         <p class="text-[9px] font-black opacity-50 uppercase mb-1">Status Koneksi</p>
                         <h3 class="text-2xl font-black tracking-tighter">LIVE SYNC ACTIVE</h3>
                     </div>
                     <div class="card">
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Pengumuman Guru</p>
-                        <div id="dash-chat" class="text-xs font-bold text-slate-600 italic">Belum ada pesan...</div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Status Kehadiran</p>
+                        <div id="dash-status" class="text-sm font-bold text-slate-600 italic">Memuat data...</div>
                     </div>
                 </section>
 
                 <section id="section-tugas" class="page-content hide space-y-4">
-                    <div id="guru-tugas-input" class="card hide">
-                        <input type="text" id="t-judul" placeholder="Judul Tugas" class="w-full p-3 mb-3 border rounded-xl font-bold outline-none focus:border-indigo-500">
-                        <button onclick="window.db_ops.sendTugas()" class="btn-primary">Kirim Tugas</button>
+                    <div id="guru-tugas-input" class="card hide bg-slate-50 border-dashed border-2">
+                        <h4 class="text-[10px] font-black uppercase text-slate-400 mb-4">Input Tugas Baru (Guru Only)</h4>
+                        <input type="text" id="t-judul" placeholder="Apa tugas hari ini?" class="w-full p-4 mb-3 border rounded-2xl font-bold outline-none focus:border-indigo-500">
+                        <button onclick="window.db_ops.sendTugas()" class="btn-primary">Publikasikan</button>
                     </div>
-                    <div id="list-tugas" class="space-y-3"></div>
+                    <div id="list-tugas" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </section>
 
                 <section id="section-absen" class="page-content hide card">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black text-xs uppercase tracking-widest text-slate-400">Presensi XII RPL 1</h3>
+                    </div>
                     <div id="list-absen" class="space-y-2"></div>
                 </section>
 
                 <section id="section-kas" class="page-content hide card">
-                    <div id="bendahara-kas-input" class="mb-6 flex gap-2 hide">
-                        <input type="number" id="k-jumlah" placeholder="Jumlah Rp" class="flex-1 p-3 border rounded-xl font-bold">
-                        <button onclick="window.db_ops.sendKas()" class="btn-primary">Input Kas</button>
+                    <div id="bendahara-kas-input" class="mb-8 p-6 bg-indigo-50 rounded-[2rem] hide">
+                        <h4 class="text-[10px] font-black uppercase text-indigo-600 mb-4">Input Pembayaran Kas</h4>
+                        <div class="flex gap-3">
+                            <input type="number" id="k-jumlah" placeholder="Jumlah Rp" class="flex-1 p-4 border rounded-2xl font-bold">
+                            <button onclick="window.db_ops.sendKas()" class="btn-primary">Simpan</button>
+                        </div>
                     </div>
-                    <div id="list-kas" class="text-xs font-bold space-y-2"></div>
+                    <div class="grid grid-cols-1 gap-2" id="list-kas"></div>
                 </section>
             </div>
         </main>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // --- 1. CONFIG FIREBASE (GANTI INI PAKAI PUNYA ABANG) ---
+        // --- 1. CONFIG FIREBASE (PASTIKAN DATABASE URL ADA) ---
         const firebaseConfig = {
-    apiKey: "AIzaSyCKoeMMj0-iAVb_xp998S1W3U4KU3fuFVs",
-    authDomain: "web-kelaz.firebaseapp.com",
-    projectId: "web-kelaz",
-    storageBucket: "web-kelaz.firebasestorage.app",
-    messagingSenderId: "393212253974",
-    appId: "1:393212253974:web:722ee1237a62d949536237",
-    measurementId: "G-597PTM9MY7"
-  };
+            apiKey: "AIzaSyCKoeMMj0-iAVb_xp998S1W3U4KU3fuFVs",
+            authDomain: "web-kelaz.firebaseapp.com",
+            databaseURL: "https://web-kelaz-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "web-kelaz",
+            storageBucket: "web-kelaz.firebasestorage.app",
+            messagingSenderId: "393212253974",
+            appId: "1:393212253974:web:722ee1237a62d949536237"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- DATA LOKAL ---
+        // --- DATA MASTER ---
         const DATA_KELAS = {
             "Guru": ["Wali Kelas XII RPL 1", "Pak Guru Produktif"],
             "Ketua Kelas": ["Cahyo Kartiko"],
             "Sekretaris": ["Ahmad Azriel"],
             "Bendahara": ["Khaysila"],
-            "Murid": ["A Fabian Syah", "Achmad Wildan", "Reno Yoga", "Siswa Lainnya..."]
+            "Murid": ["A Fabian Syah", "Achmad Wildan", "Reno Yoga", "Andrea Hafshah", "Attaya Kayla", "Karina Sakila", "Kevin Oktavian"]
         };
-        const SEMUA_SISWA = ["Cahyo Kartiko", "Ahmad Azriel", "Khaysila", "A Fabian Syah", "Achmad Wildan", "Reno Yoga"].sort();
+        const SEMUA_SISWA = Object.values(DATA_KELAS).flat().filter(n => !n.includes("Guru")).sort();
 
-        // --- GLOBAL OPS AGAR BISA DIPANGGIL DARI HTML ---
-        window.db_ops = {
-            sendTugas: () => {
-                const judul = document.getElementById('t-judul').value;
-                if(!judul) return;
-                push(ref(db, 'tugas'), { judul, pengirim: localStorage.getItem('uName'), tgl: new Date().toLocaleDateString() });
-                document.getElementById('t-judul').value = '';
-            },
-            sendKas: () => {
-                const jml = document.getElementById('k-jumlah').value;
-                if(!jml) return;
-                push(ref(db, 'kas'), { nama: localStorage.getItem('uName'), jumlah: jml });
-                document.getElementById('k-jumlah').value = '';
-            },
-            markAbsen: (nama, status) => {
-                set(ref(db, 'absen/' + nama.replace(/\s/g, '_')), { status });
-            }
-        };
-
-        // --- REALTIME LISTENERS (INI YG BIKIN SEMUA DEVICE SYNC) ---
-        onValue(ref(db, 'tugas'), (snap) => {
-            const data = snap.val();
-            const list = document.getElementById('list-tugas');
-            list.innerHTML = '';
-            for(let id in data) {
-                list.innerHTML += `<div class="card !p-4"><p class="text-[10px] font-black text-indigo-500 uppercase">${data[id].pengirim}</p><h4 class="font-black">${data[id].judul}</h4></div>`;
-            }
-        });
-
-        onValue(ref(db, 'absen'), (snap) => {
-            const data = snap.val() || {};
-            const list = document.getElementById('list-absen');
-            const role = localStorage.getItem('uRole');
-            const canAbsen = ["Sekretaris", "Guru", "Ketua Kelas"].includes(role);
-            list.innerHTML = SEMUA_SISWA.map(s => {
-                const sKey = s.replace(/\s/g, '_');
-                const stat = data[sKey]?.status || 'Belum';
-                return `<div class="flex justify-between items-center py-2 border-b">
-                    <span class="text-sm font-bold">${s}</span>
-                    ${canAbsen ? 
-                        `<button onclick="window.db_ops.markAbsen('${s}', 'H')" class="p-2 bg-slate-100 rounded-lg text-[10px] font-black ${stat==='H'?'!bg-emerald-500 text-white':''}">HADIR</button>` : 
-                        `<span class="text-[10px] font-black uppercase text-indigo-400 italic">${stat==='H'?'Hadir':'Absen'}</span>`}
-                </div>`;
-            }).join('');
-        });
-
-        onValue(ref(db, 'kas'), (snap) => {
-            const data = snap.val();
-            const list = document.getElementById('list-kas');
-            list.innerHTML = '';
-            for(let id in data) {
-                list.innerHTML += `<div class="flex justify-between"><span>${data[id].nama}</span><span>Rp ${data[id].jumlah}</span></div>`;
-            }
-        });
-
-        // --- AUTH & UI FLOW ---
-        window.updateNameList = () => {
-            const role = document.getElementById('select-role').value;
-            const sel = document.getElementById('select-nama');
-            sel.innerHTML = '<option disabled selected>Pilih Nama...</option>';
-            (DATA_KELAS[role] || []).forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
-        };
-
+        // --- EXPOSE FUNCTIONS KE WINDOW (AGAR ONCLICK JALAN) ---
         window.goToLogin = () => {
             document.getElementById('view-landing').classList.add('hide');
             document.getElementById('view-login').classList.remove('hide');
         };
 
+        window.updateNameList = () => {
+            const role = document.getElementById('select-role').value;
+            const sel = document.getElementById('select-nama');
+            sel.innerHTML = '<option disabled selected>Pilih Nama...</option>';
+            (DATA_KELAS[role] || []).forEach(n => {
+                sel.innerHTML += `<option value="${n}">${n}</option>`;
+            });
+        };
+
         window.handleLogin = () => {
-            const r = document.getElementById('select-role').value;
-            const n = document.getElementById('select-nama').value;
-            if(!r || !n) return;
-            localStorage.setItem('uRole', r);
-            localStorage.setItem('uName', n);
-            location.reload(); // Refresh to apply role
+            const role = document.getElementById('select-role').value;
+            const nama = document.getElementById('select-nama').value;
+            if(!role || !nama) return alert("Pilih Role dan Nama!");
+
+            localStorage.setItem('uRole', role);
+            localStorage.setItem('uName', nama);
+            
+            // Langsung pindah view tanpa reload penuh
+            initAppUI();
+        };
+
+        window.logout = () => {
+            localStorage.clear();
+            location.reload();
         };
 
         window.showContent = (page) => {
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hide'));
             document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
-            document.getElementById('section-' + page).classList.remove('hide');
-            document.getElementById('btn-' + page).classList.add('active');
-            document.getElementById('page-title').innerText = page;
+            
+            const target = document.getElementById('section-' + page);
+            if(target) target.classList.remove('hide');
+            
+            const btn = document.getElementById('btn-' + page);
+            if(btn) btn.classList.add('active');
+            
+            document.getElementById('page-title').innerText = page.toUpperCase();
         };
 
-        // Initialize UI on Load
-        const savedRole = localStorage.getItem('uRole');
-        if(savedRole) {
-            document.getElementById('view-landing').classList.add('hide');
-            document.getElementById('view-app').classList.remove('hide');
-            document.getElementById('u-name').innerText = localStorage.getItem('uName');
-            document.getElementById('u-role').innerText = savedRole;
-            if(savedRole === 'Guru') document.getElementById('guru-tugas-input').classList.remove('hide');
-            if(savedRole === 'Bendahara') document.getElementById('bendahara-kas-input').classList.remove('hide');
-            showContent('dash');
+        window.db_ops = {
+            sendTugas: () => {
+                const judul = document.getElementById('t-judul').value;
+                if(!judul) return;
+                push(ref(db, 'tugas'), { 
+                    judul, 
+                    pengirim: localStorage.getItem('uName'), 
+                    tgl: new Date().toLocaleDateString() 
+                });
+                document.getElementById('t-judul').value = '';
+                alert("Tugas berhasil dikirim!");
+            },
+            sendKas: () => {
+                const jml = document.getElementById('k-jumlah').value;
+                if(!jml) return;
+                push(ref(db, 'kas'), { 
+                    nama: localStorage.getItem('uName'), 
+                    jumlah: jml,
+                    tgl: new Date().toLocaleDateString()
+                });
+                document.getElementById('k-jumlah').value = '';
+                alert("Data Kas tersimpan!");
+            },
+            markAbsen: (nama, status) => {
+                set(ref(db, 'absen/' + nama.replace(/\s/g, '_')), { 
+                    status,
+                    pencatat: localStorage.getItem('uName')
+                });
+            }
+        };
+
+        // --- REALTIME LISTENERS ---
+        function startSync() {
+            onValue(ref(db, 'tugas'), (snap) => {
+                const data = snap.val();
+                const list = document.getElementById('list-tugas');
+                list.innerHTML = '';
+                if(data) {
+                    Object.values(data).reverse().forEach(t => {
+                        list.innerHTML += `<div class="card"><p class="text-[9px] font-black text-indigo-500 uppercase mb-2">${t.pengirim} • ${t.tgl}</p><h4 class="font-black text-slate-800">${t.judul}</h4></div>`;
+                    });
+                }
+            });
+
+            onValue(ref(db, 'absen'), (snap) => {
+                const data = snap.val() || {};
+                const list = document.getElementById('list-absen');
+                const role = localStorage.getItem('uRole');
+                const canAbsen = ["Sekretaris", "Guru", "Ketua Kelas"].includes(role);
+                
+                list.innerHTML = SEMUA_SISWA.map(s => {
+                    const sKey = s.replace(/\s/g, '_');
+                    const stat = data[sKey]?.status || 'Belum';
+                    return `
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-sm font-bold text-slate-700">${s}</span>
+                            ${canAbsen ? 
+                                `<div class="flex gap-2">
+                                    <button onclick="window.db_ops.markAbsen('${s}', 'H')" class="px-4 py-2 rounded-xl text-[9px] font-black ${stat==='H'?'bg-emerald-500 text-white':'bg-white text-slate-400'} border transition">HADIR</button>
+                                    <button onclick="window.db_ops.markAbsen('${s}', 'A')" class="px-4 py-2 rounded-xl text-[9px] font-black ${stat==='A'?'bg-red-500 text-white':'bg-white text-slate-400'} border transition">ALPA</button>
+                                </div>` : 
+                                `<span class="text-[10px] font-black uppercase ${stat==='H'?'text-emerald-500':'text-slate-300'} italic">${stat==='H'?'Hadir':'Belum Absen'}</span>`
+                            }
+                        </div>`;
+                }).join('');
+            });
+
+            onValue(ref(db, 'kas'), (snap) => {
+                const data = snap.val();
+                const list = document.getElementById('list-kas');
+                list.innerHTML = '';
+                if(data) {
+                    Object.values(data).reverse().forEach(k => {
+                        list.innerHTML += `<div class="flex justify-between items-center p-4 border-b border-slate-50 text-xs font-bold">
+                            <span class="text-slate-600">${k.nama}</span>
+                            <span class="text-emerald-600">Rp ${parseInt(k.jumlah).toLocaleString()}</span>
+                        </div>`;
+                    });
+                }
+            });
         }
+
+        // --- INIT UI CORE ---
+        function initAppUI() {
+            const role = localStorage.getItem('uRole');
+            const nama = localStorage.getItem('uName');
+
+            if(role && nama) {
+                document.getElementById('view-landing').classList.add('hide');
+                document.getElementById('view-login').classList.add('hide');
+                document.getElementById('view-app').classList.remove('hide');
+                
+                document.getElementById('u-name').innerText = nama;
+                document.getElementById('u-role').innerText = role;
+                document.getElementById('u-initial').innerText = nama.charAt(0);
+
+                // Role-based Access Control
+                if(role === 'Guru') document.getElementById('guru-tugas-input').classList.remove('hide');
+                if(role === 'Bendahara') document.getElementById('bendahara-kas-input').classList.remove('hide');
+                
+                startSync();
+                showContent('dash');
+            }
+        }
+
+        // Run on load
+        initAppUI();
+
     </script>
 </body>
 </html>
