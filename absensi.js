@@ -1,27 +1,19 @@
-// api/absensi.js
-// Ini adalah serverless function untuk mengelola data absensi
-export default function handler(req, res) {
-    if (req.method === 'POST') {
-        const { studentId, type, location, timestamp } = req.body;
-        
-        // Simpan ke database (di sini simulasi saja)
-        console.log(`[ABSENSI] Siswa ${studentId} ${type} di ${location} pada ${timestamp}`);
-
-        res.status(200).json({ 
-            success: true, 
-            message: `Absensi ${type} berhasil!`,
-            details: { studentId, type, location, timestamp }
-        });
-
-    } else if (req.method === 'GET') {
-        // Contoh data absensi hari ini
-        const absensiHariIni = [
-            { id: 1, nama: "Zidane Abdi", waktu: "07:30", status: "Hadir", metode: "NFC" },
-            { id: 2, nama: "Siti Aisyah", waktu: "07:35", status: "Hadir", metode: "QR Code" },
-            { id: 3, nama: "Budi Santoso", waktu: "08:10", status: "Terlambat", metode: "Manual" }
-        ];
-        res.status(200).json(absensiHariIni);
-    } else {
-        res.status(405).json({ message: 'Method Not Allowed' });
-    }
+function showAbsensi() {
+    const role = localStorage.getItem('userRole');
+    const isPengurus = ["Ketua Kelas", "Wakil Ketua", "Admin"].includes(role);
+    const root = document.getElementById('main-content');
+    
+    root.innerHTML = `
+        <h2 class="text-3xl font-black mb-2">Absensi Kelas</h2>
+        <p class="mb-6 text-slate-400 font-bold italic">${isPengurus ? 'Mode Edit Aktif' : 'Mode View Only'}</p>
+        <div class="space-y-3">
+            ${DATA_SISWA.map(s => `
+                <div class="bg-white p-4 rounded-2xl border flex justify-between items-center">
+                    <span class="font-bold text-slate-700">${s.nama}</span>
+                    ${isPengurus ? 
+                        `<button onclick="this.innerText='✓'" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold">ABSEN</button>` 
+                        : `<span class="text-xs text-slate-300">Hadir</span>`}
+                </div>
+            `).join('')}
+        </div>`;
 }
