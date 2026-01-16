@@ -3,121 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartSchool Cloud ERP - XII RPL 1</title>
+    <title>SMART ERP - Project Canceled</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; overflow-x: hidden; color: white; }
         .hide { display: none !important; }
-        .sidebar-link.active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-200; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .bg-gradient-custom { background: radial-gradient(circle at top right, #4f46e5, transparent), radial-gradient(circle at bottom left, #1e1b4b, #0f172a); }
+        .sidebar-link.active { @apply bg-indigo-600 text-white shadow-lg; }
     </style>
 </head>
-<body>
+<body class="bg-gradient-custom min-h-screen">
 
-    <div id="login-view" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 p-4">
-        <div class="bg-white p-10 rounded-[3rem] w-full max-w-md shadow-2xl text-center relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full"></div>
-            <h1 class="text-3xl font-black text-indigo-600 mb-2 italic relative">SMART<span class="text-slate-900">ERP.</span></h1>
-            <p class="text-slate-400 mb-8 font-bold text-[10px] uppercase tracking-widest">Portal Kelas XII RPL 1</p>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-[10px] font-black ml-4 text-slate-400 uppercase">Username (Nama Lengkap)</label>
-                    <input type="text" id="log-user" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold transition" placeholder="Contoh: Cahyo Kartiko">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black ml-4 text-slate-400 uppercase">Password</label>
-                    <input type="password" id="log-pass" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold transition" placeholder="siswa123">
-                </div>
-                <button onclick="authLogin()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg hover:scale-[1.02] active:scale-95 transition-all">MASUK KE SISTEM</button>
-            </div>
-            <p class="mt-6 text-[10px] text-slate-400 font-medium">Lupa password? Hubungi Ketua Kelas.</p>
+    <div id="view-thumbnail" class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div class="relative">
+            <div class="absolute -inset-1 bg-gradient-to-r from-red-600 to-indigo-600 rounded-full blur opacity-40 animate-pulse"></div>
+            <span class="relative bg-slate-900 border border-slate-700 px-6 py-2 rounded-full text-[10px] font-black tracking-[0.3em] text-red-500 mb-6 inline-block">STATUS: PROJECT CANCELED</span>
+        </div>
+        
+        <h1 class="text-7xl md:text-8xl font-black italic tracking-tighter mt-6">SMART<span class="text-indigo-500 text-outline">ERP.</span></h1>
+        <p class="max-w-xl text-slate-400 font-bold mt-4 text-sm md:text-base opacity-80 uppercase tracking-widest leading-relaxed">
+            Sistem Informasi Pengelolaan Kelas XII RPL 1 <br>
+            <span class="text-slate-600 font-medium lowercase">Development stopped due to transition to local storage architecture.</span>
+        </p>
+
+        <div class="flex gap-4 mt-12">
+            <button onclick="openLogin()" class="bg-white text-slate-900 px-10 py-5 rounded-3xl font-black hover:scale-105 transition active:scale-95 shadow-2xl shadow-white/10">
+                LIHAT PROTOTIPE <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+            <a href="#" class="border border-slate-700 px-10 py-5 rounded-3xl font-black hover:bg-slate-800 transition">DOCS</a>
+        </div>
+        
+        <div class="mt-20 grid grid-cols-3 gap-10 opacity-30 grayscale">
+            <div class="text-center"><i class="fas fa-database text-2xl mb-2"></i><p class="text-[9px] font-bold">NO SHEETS</p></div>
+            <div class="text-center"><i class="fas fa-bolt text-2xl mb-2"></i><p class="text-[9px] font-bold">LOCAL SPEED</p></div>
+            <div class="text-center"><i class="fas fa-lock text-2xl mb-2"></i><p class="text-[9px] font-bold">OFFLINE MODE</p></div>
         </div>
     </div>
 
-    <div id="app-view" class="hide min-h-screen flex">
-        <aside class="w-72 bg-white border-r p-8 fixed h-full flex flex-col z-40">
-            <div class="mb-12">
-                <h2 class="text-2xl font-black text-indigo-600 italic">DASHBOARD</h2>
-                <p id="user-display-name" class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tighter"></p>
+    <div id="view-login" class="hide fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4">
+        <div class="bg-white p-10 rounded-[3rem] w-full max-w-md shadow-2xl text-center text-slate-900">
+            <button onclick="closeLogin()" class="absolute top-6 right-6 text-slate-300 hover:text-slate-900 transition"><i class="fas fa-times text-xl"></i></button>
+            <h2 class="text-2xl font-black text-indigo-600 mb-8 italic uppercase tracking-tighter">Login System</h2>
+            <div class="space-y-4">
+                <input type="text" id="log-user" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold focus:ring-4 ring-indigo-100 transition" placeholder="Username (Nama Lengkap)">
+                <input type="password" id="log-pass" class="w-full p-5 bg-slate-100 rounded-3xl outline-none font-bold focus:ring-4 ring-indigo-100 transition" placeholder="Password (siswa123)">
+                <button onclick="authLogin()" class="w-full bg-indigo-600 text-white py-5 rounded-3xl font-black shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">AUTHENTICATE</button>
             </div>
-            
-            <nav class="space-y-3 flex-1">
-                <button id="nav-siswa" onclick="showSiswa()" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-users w-8"></i> Data Siswa
-                </button>
-                <button id="nav-guru" onclick="showGuru()" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-chalkboard-teacher w-8"></i> Wali Kelas
-                </button>
-                <button id="nav-absen" onclick="showAbsensi()" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center transition">
-                    <i class="fas fa-calendar-check w-8"></i> Presensi
-                </button>
-            </nav>
+            <p class="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">XII RPL 1 - 2026 Edition</p>
+        </div>
+    </div>
 
-            <div class="mt-auto">
-                <button onclick="location.reload()" class="w-full text-left p-4 text-red-500 font-bold hover:bg-red-50 rounded-2xl transition flex items-center">
-                    <i class="fas fa-power-off w-8"></i> Keluar Akun
-                </button>
-            </div>
+    <div id="view-app" class="hide min-h-screen flex bg-slate-50 text-slate-900">
+        <aside class="w-72 bg-white border-r p-8 fixed h-full flex flex-col z-50">
+            <h2 class="text-2xl font-black text-indigo-600 italic mb-10 tracking-tighter">SMARTERP.</h2>
+            <nav class="space-y-3 flex-1">
+                <button onclick="switchView('dash')" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center"><i class="fas fa-th-large w-8"></i> Dashboard</button>
+                <button onclick="switchView('siswa')" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center"><i class="fas fa-users w-8"></i> Siswa</button>
+                <button onclick="switchView('absen')" class="sidebar-link w-full text-left p-4 rounded-2xl font-bold text-slate-500 flex items-center"><i class="fas fa-calendar-check w-8"></i> Absensi</button>
+            </nav>
+            <button onclick="location.reload()" class="p-4 text-red-500 font-bold hover:bg-red-50 rounded-2xl transition">Power Off</button>
         </aside>
 
-        <main class="ml-72 p-10 w-full relative">
+        <main class="ml-72 p-12 w-full">
             <header class="flex justify-between items-center mb-10">
-                <div>
-                    <h2 id="page-title" class="text-4xl font-black text-slate-800 tracking-tight">Data Siswa</h2>
-                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Sistem Informasi Kelas XII RPL 1</p>
-                </div>
+                <h2 id="title-text" class="text-4xl font-black tracking-tighter">Dashboard</h2>
                 <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full border shadow-sm">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black" id="user-initial">A</div>
+                    <div id="user-initial" class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-black">?</div>
                     <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase leading-none">Status Anda</p>
-                        <p id="user-role-display" class="text-xs font-bold text-slate-800"></p>
+                        <p id="user-name" class="text-xs font-black leading-none uppercase">Admin</p>
+                        <p id="user-role" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Developer</p>
                     </div>
                 </div>
             </header>
 
-            <div id="main-content"></div>
+            <section id="page-dash-pengurus" class="page-view hide">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-indigo-600 p-10 rounded-[3rem] text-white shadow-xl shadow-indigo-100">
+                        <p class="text-[10px] font-black opacity-60 uppercase mb-2">Siswa Terdaftar</p>
+                        <h3 class="text-6xl font-black tracking-tighter">34</h3>
+                    </div>
+                    <div class="bg-white border-2 border-slate-200 p-10 rounded-[3rem] flex flex-col justify-center">
+                        <p class="text-slate-400 font-black text-[10px] uppercase mb-1">Status Sistem</p>
+                        <h3 class="text-xl font-black text-slate-800 italic uppercase">Local Stored ✅</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-dash-murid" class="page-view hide">
+                <div class="bg-white p-16 rounded-[4rem] border shadow-sm text-center">
+                    <span class="bg-indigo-50 text-indigo-600 px-6 py-2 rounded-full font-black text-[10px] tracking-widest uppercase mb-6 inline-block">Student Portal</span>
+                    <h3 class="text-4xl font-black text-slate-800 tracking-tighter">Welcome Back!</h3>
+                    <p class="text-slate-400 font-bold mt-4 italic">Semua data dimuat dari Local Architecture.</p>
+                </div>
+            </section>
+
+            <section id="page-siswa" class="page-view hide">
+                <div id="list-siswa-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+            </section>
+
+            <section id="page-absen" class="page-view hide">
+                <div class="bg-white rounded-[3rem] border shadow-sm p-8" id="list-absen-rows"></div>
+            </section>
         </main>
     </div>
 
-    <div id="modal-container" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hide items-center justify-center z-[200]">
-        </div>
+    <script>
+        function openLogin() {
+            document.getElementById('view-login').classList.remove('hide');
+        }
+        function closeLogin() {
+            document.getElementById('view-login').classList.add('hide');
+        }
+    </script>
 
     <script src="api/siswa.js"></script>
     <script src="api/login.js"></script>
-    <script src="guru.js"></script>
     <script src="absensi.js"></script>
-    
-    <script>
-        // Logic Tambahan untuk UI Sidebar
-        function updateNav(activeId) {
-            document.querySelectorAll('.sidebar-link').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(activeId).classList.add('active');
-        }
-
-        // Jalankan updateNav setiap kali fungsi halaman dipanggil
-        const originalShowSiswa = showSiswa;
-        showSiswa = function() {
-            originalShowSiswa();
-            updateNav('nav-siswa');
-            document.getElementById('page-title').innerText = "Data Siswa";
-        };
-
-        const originalShowGuru = showGuru;
-        showGuru = function() {
-            originalShowGuru();
-            updateNav('nav-guru');
-            document.getElementById('page-title').innerText = "Wali Kelas";
-        };
-
-        const originalShowAbsensi = showAbsensi;
-        showAbsensi = function() {
-            originalShowAbsensi();
-            updateNav('nav-absen');
-            document.getElementById('page-title').innerText = "Presensi Kelas";
-        };
-    </script>
 </body>
 </html>
