@@ -3,257 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartSchool GOD-MODE Edition</title>
+    <title>SmartSchool Cloud Sheets - FULL FEATURE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
         .hide { display: none !important; }
-        .active-nav { @apply bg-indigo-600 text-white shadow-lg shadow-indigo-200; }
-        .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-nav { @apply bg-indigo-600 text-white shadow-lg; }
     </style>
 </head>
-<body class="text-slate-900">
+<body>
 
     <div id="login-view" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 p-4">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl fade-in text-center">
-            <h1 class="text-4xl font-black text-indigo-600 mb-6 italic">SMART<span class="text-slate-900 text-3xl">ERP.</span></h1>
-            <div class="space-y-4">
-                <input type="email" id="log-email" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold" placeholder="admin@web.id">
-                <input type="password" id="log-pass" class="w-full p-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold" placeholder="Password (123)">
-                <button onclick="handleLogin()" id="btn-login" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black shadow-lg hover:scale-[1.02] transition">LOGIN SYSTEM</button>
-            </div>
+        <div class="bg-white p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl text-center">
+            <h1 class="text-3xl font-black text-indigo-600 mb-8 italic">SMART<span class="text-slate-900">ERP.</span></h1>
+            <input type="email" id="log-email" class="w-full p-4 mb-4 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold" placeholder="admin@web.id">
+            <input type="password" id="log-pass" class="w-full p-4 mb-6 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-indigo-500 font-bold" placeholder="123">
+            <button onclick="handleLogin()" id="btn-login" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg">MASUK SISTEM</button>
         </div>
     </div>
 
     <div id="app-view" class="hide min-h-screen flex">
-        <aside class="w-72 bg-white border-r fixed h-full z-40 p-6 hidden md:block">
-            <div class="text-2xl font-black text-indigo-600 mb-10 italic">GOD MODE V.2</div>
-            <nav class="space-y-2">
-                <button onclick="nav('dashboard')" id="nav-dashboard" class="nav-btn active-nav w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition"><i class="fas fa-chart-line"></i> Dashboard</button>
-                <button onclick="nav('users')" id="nav-users" class="nav-btn w-full text-slate-400 flex items-center gap-4 p-4 rounded-2xl font-bold transition hover:bg-slate-50"><i class="fas fa-user-shield"></i> Data Guru/Murid</button>
-                <button onclick="nav('absensi')" id="nav-absensi" class="nav-btn w-full text-slate-400 flex items-center gap-4 p-4 rounded-2xl font-bold transition hover:bg-slate-50"><i class="fas fa-clipboard-check"></i> Absensi Kelas</button>
-                <div class="pt-20">
-                    <button onclick="location.reload()" class="w-full bg-red-50 text-red-500 p-4 rounded-2xl font-bold hover:bg-red-100"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </div>
+        <aside class="w-72 bg-white border-r p-6 fixed h-full flex flex-col">
+            <h2 class="text-2xl font-black text-indigo-600 mb-10 italic">GOD MODE</h2>
+            <nav class="space-y-2 flex-1">
+                <button onclick="showPage('users')" id="nav-users" class="nav-btn w-full text-left p-4 rounded-2xl font-bold active-nav"><i class="fas fa-users mr-3"></i> Data User</button>
+                <button onclick="showPage('absensi')" id="nav-absensi" class="nav-btn w-full text-left p-4 text-slate-400 font-bold hover:bg-slate-50 rounded-2xl"><i class="fas fa-calendar-check mr-3"></i> Absensi</button>
+                <button onclick="location.reload()" class="w-full text-left p-4 text-red-500 font-bold mt-10"><i class="fas fa-power-off mr-3"></i> Logout</button>
             </nav>
         </aside>
 
-        <main class="md:ml-72 w-full p-10">
+        <main class="ml-72 p-10 w-full">
             <header class="flex justify-between items-center mb-10">
-                <div>
-                    <h2 id="page-title" class="text-4xl font-black">Overview</h2>
-                    <p class="text-slate-400 font-bold">Cloud Database: <span class="text-emerald-500 text-xs">CONNECTED</span></p>
-                </div>
-                <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full border shadow-sm">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-black">A</div>
-                    <p class="font-black text-sm" id="admin-name">Master Admin</p>
+                <h2 id="page-title" class="text-4xl font-black text-slate-800">Data User</h2>
+                <div id="btn-add-container">
+                    <button onclick="openModal()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-xl">+ TAMBAH USER</button>
                 </div>
             </header>
 
-            <div id="content" class="fade-in">
+            <div id="page-users-content">
+                <div class="bg-white rounded-[2.5rem] border shadow-sm overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b font-black text-xs text-slate-400 uppercase">
+                            <tr><th class="p-6">Nama</th><th class="p-6">Role</th><th class="p-6">Kelas</th><th class="p-6">Email</th></tr>
+                        </thead>
+                        <tbody id="user-table-body"></tbody>
+                    </table>
                 </div>
+            </div>
+
+            <div id="page-absensi-content" class="hide">
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm mb-6 flex gap-4">
+                    <select id="absen-filter-kelas" class="flex-1 p-4 bg-slate-50 rounded-2xl font-bold outline-none border">
+                        <option value="XII-RPL-1">XII-RPL-1</option>
+                        <option value="XII-RPL-2">XII-RPL-2</option>
+                    </select>
+                    <button onclick="loadAbsenSiswa()" class="bg-slate-900 text-white px-8 rounded-2xl font-bold">LOAD SISWA</button>
+                </div>
+                <div id="absen-list" class="space-y-4"></div>
+            </div>
         </main>
     </div>
 
-    <div id="modal-user" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hide items-center justify-center z-[100] p-4">
-        <div class="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl fade-in">
-            <h3 id="modal-title" class="text-2xl font-black mb-6">Tambah User</h3>
+    <div id="modal-user" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hide items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl">
+            <h3 class="text-2xl font-black mb-6">User Baru</h3>
             <div class="space-y-4">
-                <input type="text" id="m-nama" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none focus:border-indigo-600" placeholder="Nama Lengkap">
-                <input type="email" id="m-email" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none" placeholder="Email Login">
-                <div class="grid grid-cols-2 gap-4">
-                    <select id="m-role" class="p-4 bg-slate-50 border rounded-2xl font-bold outline-none">
-                        <option value="Guru">Guru</option>
-                        <option value="Murid">Murid</option>
-                        <option value="Ketua Kelas">Ketua Kelas</option>
-                        <option value="Bendahara">Bendahara</option>
-                    </select>
-                    <select id="m-kelas" class="p-4 bg-slate-50 border rounded-2xl font-bold outline-none">
-                        <option value="XII-RPL-1">XII-RPL-1</option>
-                        <option value="XII-RPL-2">XII-RPL-2</option>
-                        <option value="XI-TKJ">XI-TKJ</option>
-                    </select>
-                </div>
-                <div class="flex gap-4 pt-6">
-                    <button onclick="saveUser()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg">SIMPAN DATA</button>
-                    <button onclick="toggleModal(false)" class="flex-1 bg-slate-100 py-4 rounded-2xl font-bold text-slate-400">BATAL</button>
+                <input type="text" id="m-nama" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none" placeholder="Nama Lengkap">
+                <select id="m-role" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none">
+                    <option value="Murid">Murid</option>
+                    <option value="Guru">Guru</option>
+                </select>
+                <select id="m-kelas" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none">
+                    <option value="XII-RPL-1">XII-RPL-1</option>
+                    <option value="XII-RPL-2">XII-RPL-2</option>
+                </select>
+                <input type="email" id="m-email" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none" placeholder="Email">
+                <input type="text" id="m-pass" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold outline-none" placeholder="Password">
+                <div class="flex gap-4 pt-4">
+                    <button onclick="saveUserToExcel()" id="btn-save" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg">SIMPAN</button>
+                    <button onclick="closeModal()" class="flex-1 bg-slate-100 py-4 rounded-2xl font-bold text-slate-400">BATAL</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- CONFIG DATABASE (GANTI DENGAN PUNYA ABANG!) ---
-        const SB_URL = "https://dvndswbsdwlcyimllypw.supabase.co";
-        const SB_KEY = "sb_publishable_jdTx_jvNCAVuVs5z2ffVSw_VGqjxVN9";
-        const supabase = supabase.createClient(SB_URL, SB_KEY);
+        // GANTI INI!! (URL Project Sheety abang)
+        const BASE_API = "https://api.sheety.co/ID_PROJECT_ABANG/databaseSekolah";
+        
+        let allUsers = [];
 
-        let currentUser = null;
-
-        // --- AUTH LOGIC ---
         async function handleLogin() {
             const email = document.getElementById('log-email').value;
             const pass = document.getElementById('log-pass').value;
+            const btn = document.getElementById('btn-login');
 
-            const { data, error } = await supabase
-                .from('users_sekolah')
-                .select('*')
-                .eq('email', email)
-                .eq('password', pass)
-                .single();
+            btn.innerText = "Syncing...";
+            try {
+                const res = await fetch(`${BASE_API}/users`);
+                const json = await res.json();
+                allUsers = json.users;
 
-            if (data) {
-                currentUser = data;
-                document.getElementById('login-view').classList.add('hide');
-                document.getElementById('app-view').classList.remove('hide');
-                nav('dashboard');
-            } else {
-                alert("Login Gagal! Akun tidak ada di Cloud.");
-            }
+                const found = allUsers.find(u => u.email === email && u.password.toString() === pass);
+                if (found) {
+                    document.getElementById('login-view').classList.add('hide');
+                    document.getElementById('app-view').classList.remove('hide');
+                    renderUserTable();
+                } else { alert("Data tidak ditemukan di Google Sheets!"); }
+            } catch (e) { alert("Cek URL Sheety abang!"); }
+            btn.innerText = "MASUK SISTEM";
         }
 
-        // --- NAVIGATION ENGINE ---
-        async function nav(modul) {
-            const content = document.getElementById('content');
-            const title = document.getElementById('page-title');
-            
-            // UI Sidebar
+        function showPage(page) {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav', 'text-white'));
-            document.getElementById(`nav-${modul}`).classList.add('active-nav');
-
-            if (modul === 'dashboard') {
-                title.innerText = "Dashboard Utama";
-                const { data } = await supabase.from('users_sekolah').select('role');
-                const m = data.filter(u => u.role !== 'Guru').length;
-                const g = data.filter(u => u.role === 'Guru').length;
-                
-                content.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="bg-indigo-600 p-10 rounded-[2.5rem] shadow-xl text-white">
-                            <p class="font-bold opacity-60">JUMLAH SISWA</p>
-                            <h4 class="text-6xl font-black mt-2">${m}</h4>
-                        </div>
-                        <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border">
-                            <p class="font-bold text-slate-400">TENAGA GURU</p>
-                            <h4 class="text-6xl font-black mt-2 text-slate-900">${g}</h4>
-                        </div>
-                    </div>
-                `;
-            } 
+            document.getElementById(`nav-${page}`).classList.add('active-nav', 'text-white');
             
-            else if (modul === 'users') {
-                title.innerText = "Manajemen Orang";
-                content.innerHTML = `
-                    <div class="flex justify-between mb-8">
-                        <select id="f-kelas" onchange="loadUserTable()" class="p-4 bg-white border rounded-2xl font-bold outline-none">
-                            <option value="ALL">Semua Kelas</option>
-                            <option value="XII-RPL-1">XII-RPL-1</option>
-                            <option value="XII-RPL-2">XII-RPL-2</option>
-                        </select>
-                        <button onclick="toggleModal(true)" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg">+ TAMBAH BARU</button>
-                    </div>
-                    <div class="bg-white rounded-[2.5rem] shadow-sm border overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-50 border-b">
-                                <tr class="text-xs font-black uppercase text-slate-400">
-                                    <th class="p-6">Nama Lengkap</th><th class="p-6">Role</th><th class="p-6">Kelas</th><th class="p-6 text-center">Hapus</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-user-body"></tbody>
-                        </table>
-                    </div>
-                `;
-                loadUserTable();
-            }
-
-            else if (modul === 'absensi') {
-                title.innerText = "Absensi Harian";
-                content.innerHTML = `
-                    <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border mb-8">
-                        <p class="font-bold text-slate-400 mb-4">Pilih Kelas untuk Diabsen</p>
-                        <div class="flex gap-4">
-                            <select id="absen-kelas" class="flex-1 p-4 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                <option value="XII-RPL-1">XII-RPL-1</option>
-                                <option value="XII-RPL-2">XII-RPL-2</option>
-                            </select>
-                            <button onclick="loadAbsenSiswa()" class="bg-slate-900 text-white px-10 rounded-2xl font-black">LOAD SISWA</button>
-                        </div>
-                    </div>
-                    <div id="absen-list" class="space-y-4"></div>
-                `;
+            if(page === 'users') {
+                document.getElementById('page-users-content').classList.remove('hide');
+                document.getElementById('page-absensi-content').classList.add('hide');
+                document.getElementById('btn-add-container').classList.remove('hide');
+                document.getElementById('page-title').innerText = "Data User";
+            } else {
+                document.getElementById('page-users-content').classList.add('hide');
+                document.getElementById('page-absensi-content').classList.remove('hide');
+                document.getElementById('btn-add-container').classList.add('hide');
+                document.getElementById('page-title').innerText = "Absensi Harian";
             }
         }
 
-        // --- DATA LOGIC ---
-        async function loadUserTable() {
-            const filter = document.getElementById('f-kelas').value;
-            let query = supabase.from('users_sekolah').select('*').order('created_at', { ascending: false });
-            if(filter !== 'ALL') query = query.eq('kelas', filter);
-            
-            const { data } = await query;
-            const tbody = document.getElementById('table-user-body');
-            tbody.innerHTML = data.map(u => `
-                <tr class="border-b hover:bg-slate-50 transition">
-                    <td class="p-6 font-bold text-slate-800">${u.nama}</td>
-                    <td class="p-6"><span class="px-4 py-1 rounded-full text-[10px] font-black uppercase ${u.role === 'Guru' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}">${u.role}</span></td>
-                    <td class="p-6 font-mono text-slate-500">${u.kelas}</td>
-                    <td class="p-6 text-center"><button onclick="deleteUser('${u.id}')" class="text-red-500 hover:scale-110"><i class="fas fa-trash-alt"></i></button></td>
+        function renderUserTable() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = allUsers.map(u => `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="p-6 font-bold text-slate-700">${u.nama}</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-[10px] font-black uppercase">${u.role}</span></td>
+                    <td class="p-6 text-slate-500 font-mono">${u.kelas}</td>
+                    <td class="p-6 text-slate-400">${u.email}</td>
                 </tr>
             `).join('');
         }
 
-        async function saveUser() {
-            const nama = document.getElementById('m-nama').value;
-            const email = document.getElementById('m-email').value;
-            const role = document.getElementById('m-role').value;
-            const kelas = document.getElementById('m-kelas').value;
-
-            if(!nama || !email) return alert("Isi semua data, Bang!");
-
-            const { error } = await supabase.from('users_sekolah').insert([{
-                nama, email, role, kelas, password: '123'
-            }]);
-
-            if(!error) {
-                toggleModal(false);
-                loadUserTable();
-            } else { alert("Email sudah terdaftar!"); }
-        }
-
-        async function deleteUser(id) {
-            if(!confirm("Hapus dari database cloud?")) return;
-            await supabase.from('users_sekolah').delete().eq('id', id);
-            loadUserTable();
-        }
-
-        // --- ABSENSI LOGIC ---
-        async function loadAbsenSiswa() {
-            const kelas = document.getElementById('absen-kelas').value;
-            const { data } = await supabase.from('users_sekolah').select('*').eq('kelas', kelas).neq('role', 'Guru');
+        async function saveUserToExcel() {
+            const btn = document.getElementById('btn-save');
+            const newUser = {
+                user: {
+                    nama: document.getElementById('m-nama').value,
+                    role: document.getElementById('m-role').value,
+                    kelas: document.getElementById('m-kelas').value,
+                    email: document.getElementById('m-email').value,
+                    password: document.getElementById('m-pass').value
+                }
+            };
             
-            const list = document.getElementById('absen-list');
-            if(data.length === 0) { list.innerHTML = "Belum ada murid di kelas ini."; return; }
+            btn.innerText = "Saving...";
+            await fetch(`${BASE_API}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newUser)
+            });
+            
+            closeModal();
+            handleLogin(); // Refresh
+        }
 
-            list.innerHTML = data.map(m => `
-                <div class="bg-white p-6 rounded-3xl flex justify-between items-center shadow-sm border border-transparent hover:border-indigo-600 transition">
-                    <span class="font-black">${m.nama}</span>
+        async function loadAbsenSiswa() {
+            const kelas = document.getElementById('absen-filter-kelas').value;
+            const murid = allUsers.filter(u => u.kelas === kelas && u.role === 'Murid');
+            const list = document.getElementById('absen-list');
+            
+            if(murid.length === 0) { list.innerHTML = "Tidak ada murid."; return; }
+
+            list.innerHTML = murid.map(m => `
+                <div class="bg-white p-6 rounded-[2rem] border flex justify-between items-center shadow-sm">
+                    <span class="font-bold text-slate-700">${m.nama}</span>
                     <div class="flex gap-2">
-                        <button onclick="this.className='bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold transition'" class="bg-white border px-4 py-2 rounded-xl font-bold text-xs">Hadir</button>
-                        <button onclick="this.className='bg-red-500 text-white px-4 py-2 rounded-xl font-bold transition'" class="bg-white border px-4 py-2 rounded-xl font-bold text-xs">Alpha</button>
+                        <button onclick="submitAbsen('${m.nama}', '${m.kelas}', 'HADIR', this)" class="px-6 py-2 bg-emerald-100 text-emerald-600 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition">HADIR</button>
+                        <button onclick="submitAbsen('${m.nama}', '${m.kelas}', 'ALPHA', this)" class="px-6 py-2 bg-red-100 text-red-600 rounded-xl font-bold hover:bg-red-600 hover:text-white transition">ALPHA</button>
                     </div>
                 </div>
-            `).join('') + `<button onclick="alert('Absensi Terkirim ke Cloud!')" class="w-full bg-indigo-600 text-white py-5 rounded-3xl font-black mt-10 shadow-xl">SUBMIT ABSENSI</button>`;
+            `).join('');
         }
 
-        function toggleModal(show) {
-            const m = document.getElementById('modal-user');
-            if(show) { m.classList.remove('hide'); m.classList.add('flex'); }
-            else { m.classList.add('hide'); m.classList.remove('flex'); }
+        async function submitAbsen(nama, kelas, status, btn) {
+            btn.innerText = "...";
+            const dataAbsen = {
+                absensi: {
+                    nama: nama,
+                    kelas: kelas,
+                    status: status,
+                    tanggal: new Date().toLocaleDateString('id-ID')
+                }
+            };
+
+            await fetch(`${BASE_API}/absensi`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataAbsen)
+            });
+            
+            btn.parentElement.innerHTML = `<span class="text-indigo-600 font-black italic">Tercatat!</span>`;
         }
+
+        function openModal() { document.getElementById('modal-user').classList.replace('hide', 'flex'); }
+        function closeModal() { document.getElementById('modal-user').classList.replace('flex', 'hide'); }
     </script>
 </body>
 </html>
