@@ -3,258 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XII RPL 2 - SUPREME COMMAND CENTER</title>
+    <title>XII RPL 2 - ULTIMATE OS V4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7fe; color: #1e293b; transition: 0.3s; }
-        .dark-mode { background: #0f172a; color: #e2e8f0; }
-        .dark-mode .bento, .dark-mode aside { background: #1e293b; border-color: #334155; color: #fff; }
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --primary: #4f46e5;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-dark: rgba(15, 23, 42, 0.7);
+        }
+
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-light); color: #334155; transition: 0.3s; overflow-x: hidden; }
+        
+        /* DARK MODE ENGINE */
+        .dark-mode { background: var(--bg-dark); color: #f1f5f9; }
+        .dark-mode .glass-panel { background: rgba(30, 41, 59, 0.7); border-color: rgba(255,255,255,0.1); color: white; }
         .dark-mode .sidebar-btn { color: #94a3b8; }
+        .dark-mode .sidebar-btn:hover, .dark-mode .sidebar-active { background: #334155; color: white; }
+        .dark-mode input, .dark-mode select, .dark-mode textarea { background: #1e293b; border-color: #334155; color: white; }
+        .dark-mode .text-slate-900 { color: white !important; }
+        .dark-mode .text-slate-600 { color: #cbd5e1 !important; }
+        .dark-mode .bg-white { background: #1e293b; }
+
+        /* GLASSMORPHISM UI */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+
+        /* UTILS */
         .hide { display: none !important; }
-        .sidebar-active { @apply bg-indigo-600 text-white shadow-xl shadow-indigo-300 scale-105; }
-        .bento { @apply bg-white rounded-[2.5rem] p-8 border border-slate-200/60 shadow-sm hover:shadow-2xl transition-all duration-500; }
-        .chat-area { height: 450px; overflow-y: auto; display: flex; flex-direction: column; scroll-behavior: smooth; }
-        .avatar-lg { @apply w-16 h-16 rounded-[1.5rem] border-4 border-white shadow-lg object-cover bg-slate-200; }
-        
-        /* Modal Overlay */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; bg-black/50; z-index: 999; backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+        .sidebar-active { background: var(--primary); color: white !important; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
+        .avatar-lg { width: 3.5rem; height: 3.5rem; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* SPIN WHEEL */
+        .wheel-container { position: relative; width: 300px; height: 300px; margin: 0 auto; overflow: hidden; border-radius: 50%; border: 5px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; position: relative; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); background: conic-gradient(from 0deg, #f87171 0 10%, #fb923c 10% 20%, #facc15 20% 30%, #a3e635 30% 40%, #4ade80 40% 50%, #2dd4bf 50% 60%, #38bdf8 60% 70%, #818cf8 70% 80%, #c084fc 80% 90%, #f472b6 90% 100%); }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ef4444; z-index: 10; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3)); }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            aside { transform: translateX(-100%); position: fixed; height: 100%; z-index: 50; }
+            aside.open { transform: translateX(0); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+            main { margin-left: 0 !important; padding-top: 5rem !important; }
+        }
     </style>
 </head>
 <body class="antialiased">
 
-    <div id="view-login" class="min-h-screen flex items-center justify-center bg-slate-950 relative overflow-hidden p-6">
-        <div class="absolute w-[600px] h-[600px] bg-indigo-600 rounded-full blur-[180px] -top-20 -left-20 opacity-20"></div>
-        <div class="z-10 w-full max-w-lg animate__animated animate__fadeIn">
-            <div class="text-center mb-10 text-white">
-                <h1 class="text-7xl font-black italic tracking-tighter">RPL<span class="text-indigo-500">2.</span></h1>
-                <p class="text-xs font-bold uppercase tracking-[0.5em] opacity-50 mt-4">Supreme Class Management</p>
+    <div id="view-login" class="min-h-screen flex items-center justify-center bg-[#0f172a] relative overflow-hidden p-4">
+        <div class="absolute w-[800px] h-[800px] bg-indigo-600 rounded-full blur-[200px] opacity-20 -top-40 -left-20 animate-pulse"></div>
+        <div class="absolute w-[600px] h-[600px] bg-purple-600 rounded-full blur-[150px] opacity-20 bottom-0 right-0"></div>
+        
+        <div class="z-10 w-full max-w-md animate__animated animate__fadeInUp">
+            <div class="text-center mb-8">
+                <h1 class="text-7xl font-black italic tracking-tighter text-white">RPL<span class="text-indigo-400">2.</span></h1>
+                <p class="text-xs font-bold uppercase tracking-[0.5em] text-slate-400 mt-2">Ultimate Class OS v4.0</p>
             </div>
-            <div class="bg-white p-12 rounded-[4rem] shadow-2xl">
-                <div class="space-y-5">
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2 mb-2 block">Akses Sebagai</label>
-                        <select id="login-role" onchange="window.syncLoginNames()" class="w-full p-5 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:border-indigo-500 transition-all outline-none appearance-none">
-                            <option value="" disabled selected>Pilih Role...</option>
-                            <option value="Walas">Wali Kelas (Admin)</option>
-                            <option value="Guru">Guru Mata Pelajaran</option>
-                            <option value="Ketua Kelas">Ketua Kelas</option>
-                            <option value="Sekretaris">Sekretaris</option>
-                            <option value="Bendahara">Bendahara</option>
-                            <option value="Murid">Siswa/i RPL 2</option>
+            <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <i class="fas fa-user-shield absolute top-4 left-4 text-slate-400"></i>
+                        <select id="login-role" onchange="window.syncLoginNames()" class="w-full pl-12 p-4 bg-black/20 text-white rounded-xl font-bold border border-white/10 outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                            <option value="" disabled selected class="bg-slate-800">Pilih Role Akses...</option>
+                            <option value="Walas" class="bg-slate-800">Wali Kelas (Admin)</option>
+                            <option value="Guru" class="bg-slate-800">Guru Mapel</option>
+                            <option value="Ketua Kelas" class="bg-slate-800">Ketua Kelas</option>
+                            <option value="Sekretaris" class="bg-slate-800">Sekretaris</option>
+                            <option value="Bendahara" class="bg-slate-800">Bendahara</option>
+                            <option value="Murid" class="bg-slate-800">Siswa/i RPL 2</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2 mb-2 block">Nama Lengkap</label>
-                        <select id="login-name" class="w-full p-5 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:border-indigo-500 transition-all outline-none appearance-none">
-                            <option value="" disabled selected>Pilih Nama...</option>
+                    <div class="relative">
+                        <i class="fas fa-user absolute top-4 left-4 text-slate-400"></i>
+                        <select id="login-name" class="w-full pl-12 p-4 bg-black/20 text-white rounded-xl font-bold border border-white/10 outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                            <option value="" disabled selected class="bg-slate-800">Pilih Nama...</option>
                         </select>
                     </div>
-                    <button onclick="window.doLogin()" class="w-full bg-indigo-600 text-white py-6 rounded-3xl font-black uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-indigo-200">Masuk Sistem</button>
+                    <button onclick="window.doLogin()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest shadow-lg shadow-indigo-500/30 transition-all hover:scale-[1.02]">Masuk Sistem</button>
                 </div>
             </div>
+            <p class="text-center text-[10px] text-slate-500 mt-6">Secure System • Firebase Realtime DB Connected</p>
         </div>
     </div>
 
-    <div id="view-app" class="hide flex min-h-screen">
-        <aside class="w-80 bg-white border-r border-slate-100 p-8 fixed h-full flex flex-col z-50 overflow-hidden">
-            <div class="mb-10 flex items-center gap-4">
-                <div class="w-12 h-12 bg-slate-950 rounded-2xl flex items-center justify-center text-white text-2xl font-black italic">R2</div>
+    <div id="view-app" class="hide flex min-h-screen relative">
+        
+        <div class="fixed top-0 left-0 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md z-40 p-4 flex justify-between items-center md:hidden border-b border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="font-black italic text-xl text-indigo-600 dark:text-white">RPL 2 OS</span>
+            <button onclick="document.querySelector('aside').classList.toggle('open')" class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center shadow-sm">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <aside class="w-72 bg-white border-r border-slate-200 p-6 fixed h-full flex flex-col transition-colors z-50 shadow-xl md:shadow-none">
+            <div class="mb-8 hidden md:flex items-center gap-4">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-indigo-200">R2</div>
                 <div>
-                    <h2 class="text-xl font-black italic leading-none">RPL 2</h2>
-                    <p class="text-[8px] font-black text-indigo-500 uppercase tracking-widest mt-1">Premiere Hub</p>
+                    <h2 class="text-lg font-black italic leading-none dark:text-white">RPL 2</h2>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ultimate V4.0</p>
                 </div>
             </div>
             
-            <nav class="space-y-1 flex-1 overflow-y-auto pr-2 custom-scroll">
-                <button onclick="window.nav('dash')" id="btn-dash" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-home-alt"></i> Dashboard</button>
-                <button onclick="window.nav('chat')" id="btn-chat" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-comment-alt-lines"></i> Forum Chat</button>
-                <button onclick="window.nav('absen')" id="btn-absen" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-user-check"></i> Absensi</button>
-                <button onclick="window.nav('kas')" id="btn-kas" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-wallet"></i> Uang Kas</button>
-                <button onclick="window.nav('piket')" id="btn-piket" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-broom"></i> Jadwal Piket</button>
-                <button onclick="window.nav('voting')" id="btn-voting" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-poll-h"></i> Polling Kelas</button>
-                <button onclick="window.nav('extra')" id="btn-extra" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-slate-400 flex items-center gap-4 transition-all hover:bg-slate-50"><i class="fas fa-grid-2"></i> 30+ Fitur</button>
+            <nav class="space-y-2 flex-1 overflow-y-auto pr-2 custom-scroll">
+                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest px-4 mt-2 mb-2">Apps</p>
+                <button onclick="window.nav('dash')" id="btn-dash" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-rocket w-6 text-center"></i> Dashboard</button>
+                <button onclick="window.nav('chat')" id="btn-chat" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-comment-dots w-6 text-center"></i> Chat Room</button>
+                <button onclick="window.nav('tugas')" id="btn-tugas" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-tasks w-6 text-center"></i> Tugas & PR <span class="text-[8px] bg-red-500 text-white px-1.5 rounded-md ml-auto animate-pulse">NEW</span></button>
+                <button onclick="window.nav('wheel')" id="btn-wheel" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-dharmachakra w-6 text-center"></i> Spin Wheel</button>
+                <button onclick="window.nav('idcard')" id="btn-idcard" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-id-card w-6 text-center"></i> Digital ID</button>
                 
-                <div id="admin-gate" class="hide pt-6 border-t mt-6">
-                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest px-4 mb-2">Walas Zone</p>
-                    <button onclick="window.nav('admin')" id="btn-admin" class="sidebar-btn w-full text-left p-4 rounded-2xl font-bold text-indigo-600 bg-indigo-50 flex items-center gap-4"><i class="fas fa-sliders-h"></i> Control Panel</button>
+                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest px-4 mt-6 mb-2">Akademik</p>
+                <button onclick="window.nav('absen')" id="btn-absen" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-user-check w-6 text-center"></i> Absensi</button>
+                <button onclick="window.nav('piket')" id="btn-piket" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-slate-500 flex items-center gap-3 transition-all hover:bg-slate-50 text-sm"><i class="fas fa-broom w-6 text-center"></i> Piket</button>
+                
+                <div id="admin-gate" class="hide pt-4 border-t border-slate-100 mt-4 dark:border-slate-700">
+                    <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest px-4 mb-2">Walas Zone</p>
+                    <button onclick="window.nav('admin')" id="btn-admin" class="sidebar-btn w-full text-left p-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 flex items-center gap-3 text-sm"><i class="fas fa-cogs w-6 text-center"></i> Pengaturan</button>
                 </div>
             </nav>
 
-            <button onclick="window.logout()" class="p-5 mt-6 bg-red-50 text-red-500 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-power-off mr-2"></i> Keluar</button>
+            <button onclick="window.logout()" class="w-full p-4 mt-4 bg-red-50 text-red-500 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-power-off mr-2"></i> KELUAR</button>
         </aside>
 
-        <main class="ml-80 flex-1 p-12 transition-all">
-            <header class="flex justify-between items-end mb-12">
+        <main class="md:ml-72 flex-1 p-6 md:p-10 transition-all w-full max-w-7xl mx-auto">
+            
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
                 <div>
-                    <h3 id="page-title" class="text-5xl font-black italic tracking-tighter uppercase">Dashboard</h3>
-                    <p id="clock" class="text-[11px] font-bold text-indigo-500 uppercase tracking-[0.4em] mt-2"></p>
-                </div>
-                <div class="flex items-center gap-6 bg-white p-3 pr-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <div class="relative group">
-                        <img id="my-ava" src="" class="avatar-lg">
-                        <label class="absolute inset-0 bg-black/60 rounded-[1.5rem] opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-all">
-                            <i class="fas fa-camera text-white"></i>
-                            <input type="file" id="up-ava" class="hidden" accept=".png,.jpg">
-                        </label>
+                    <h3 id="page-title" class="text-3xl md:text-5xl font-black italic tracking-tighter uppercase text-slate-900">Dashboard</h3>
+                    <div class="flex items-center gap-3 mt-2">
+                        <p id="clock" class="text-[10px] font-bold text-white bg-slate-800 px-3 py-1 rounded-lg">--:--</p>
+                        <p id="date-now" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Senin, 20 Jan 2024</p>
                     </div>
-                    <div>
-                        <p id="u-name" class="text-lg font-black leading-none text-slate-900">Name</p>
-                        <p id="u-role" class="text-[9px] font-bold text-indigo-500 uppercase tracking-[0.2em] mt-2">Role</p>
+                </div>
+                <div class="flex items-center gap-4 self-end md:self-auto">
+                    <button onclick="document.body.classList.toggle('dark-mode')" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-sm text-slate-600 flex items-center justify-center hover:scale-110 transition-all"><i class="fas fa-adjust"></i></button>
+                    <div class="flex items-center gap-3 bg-white dark:bg-slate-800 p-2 pr-4 rounded-full shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="relative group">
+                            <img id="my-ava" src="" class="avatar-lg bg-slate-200">
+                            <label class="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-all">
+                                <i class="fas fa-camera text-white"></i>
+                                <input type="file" id="up-ava" class="hidden" accept=".jpg,.png,.jpeg">
+                            </label>
+                        </div>
+                        <div class="hidden md:block">
+                            <p id="u-name" class="text-sm font-black leading-none text-slate-900 truncate max-w-[100px]">User</p>
+                            <p id="u-role" class="text-[9px] font-bold text-indigo-500 uppercase tracking-wider mt-1">Role</p>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <div id="content-flow">
-                <section id="section-dash" class="page-content grid grid-cols-1 md:grid-cols-3 gap-8 animate__animated animate__fadeIn">
-                    <div onclick="window.showWeeklySchedule()" class="col-span-2 bg-indigo-600 rounded-[3.5rem] p-12 text-white relative overflow-hidden cursor-pointer group shadow-2xl shadow-indigo-300">
-                        <i class="fas fa-calendar-alt absolute -right-10 -bottom-10 text-[20rem] opacity-10 group-hover:scale-110 transition-all rotate-12"></i>
-                        <p class="text-xs font-black uppercase tracking-[0.4em] opacity-70 mb-4">Mata Pelajaran Saat Ini:</p>
-                        <h2 id="live-mapel" class="text-5xl md:text-6xl font-black italic tracking-tighter mb-6 leading-tight">Loading...</h2>
-                        <div class="flex items-center gap-6">
-                            <span id="live-jam" class="bg-white/20 backdrop-blur-md px-6 py-3 rounded-2xl font-black text-sm">--:--</span>
-                            <span class="text-sm font-bold opacity-60 italic underline hover:text-white transition-all">Lihat Jadwal Mingguan ➜</span>
-                        </div>
-                    </div>
-                    <div class="bento flex flex-col items-center justify-center text-center">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Suasana Kelas</p>
-                        <div class="text-7xl animate-bounce mb-4">🔥</div>
-                        <p class="font-black text-slate-800 text-xl italic">RPL 2 ON FIRE!</p>
-                    </div>
-                    <div class="bento col-span-3 overflow-hidden bg-slate-900 text-white border-none">
+                <section id="section-dash" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6 animate__animated animate__fadeIn">
+                    <div onclick="window.showWeeklySchedule()" class="col-span-1 md:col-span-2 glass-panel p-8 relative overflow-hidden cursor-pointer group bg-gradient-to-br from-indigo-600 to-violet-600 text-white border-none">
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mb-4 flex items-center gap-2"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Live Class</p>
+                        <h2 id="live-mapel" class="text-4xl md:text-5xl font-black italic tracking-tighter mb-4 leading-tight">Loading...</h2>
                         <div class="flex items-center gap-4">
-                            <span class="bg-red-500 text-white px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest animate-pulse">LIVE NEWS</span>
-                            <marquee class="font-bold text-lg">📢 INFO: Portofolio Web wajib dikumpulkan hari Jumat! • Uang Kas bulan ini tolong dilunasi • Jangan lupa piket sesuai jadwal! • Web Class Update v2.0 Released!</marquee>
+                            <div class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl font-bold text-sm border border-white/10"><i class="fas fa-clock mr-2"></i><span id="live-jam">--:--</span></div>
+                            <span class="text-xs font-bold opacity-70 underline decoration-2 decoration-white/30">Lihat Jadwal Lengkap ➜</span>
                         </div>
+                    </div>
+
+                    <div class="glass-panel p-6 flex flex-col justify-between bg-white dark:bg-slate-800">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-black text-lg text-slate-800 dark:text-white"><i class="fas fa-robot text-indigo-500 mr-2"></i>R2-Bot</h4>
+                                <span class="text-[9px] bg-indigo-100 text-indigo-600 px-2 py-1 rounded font-bold">BETA</span>
+                            </div>
+                            <div id="bot-response" class="text-xs text-slate-500 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl min-h-[60px] mb-3">
+                                Halo! Tanya saya tentang "PR" atau "Jadwal".
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="bot-input" placeholder="Ketik perintah..." class="flex-1 p-2 text-xs border rounded-lg bg-transparent dark:text-white">
+                            <button onclick="window.askBot()" class="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-xs hover:bg-indigo-700"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div onclick="window.nav('tugas')" class="glass-panel p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50 bg-white dark:bg-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl"><i class="fas fa-book-open"></i></div>
+                            <div><h5 class="font-bold text-sm text-slate-800 dark:text-white">Tugas</h5><p class="text-[10px] text-slate-400">Cek PR Sekolah</p></div>
+                        </div>
+                        <div onclick="window.nav('wheel')" class="glass-panel p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50 bg-white dark:bg-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl"><i class="fas fa-dice"></i></div>
+                            <div><h5 class="font-bold text-sm text-slate-800 dark:text-white">Spin Wheel</h5><p class="text-[10px] text-slate-400">Acak Siswa</p></div>
+                        </div>
+                        <div onclick="window.nav('idcard')" class="glass-panel p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50 bg-white dark:bg-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl"><i class="fas fa-id-card"></i></div>
+                            <div><h5 class="font-bold text-sm text-slate-800 dark:text-white">ID Card</h5><p class="text-[10px] text-slate-400">Kartu Digital</p></div>
+                        </div>
+                        <div onclick="window.nav('chat')" class="glass-panel p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50 bg-white dark:bg-slate-800">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl"><i class="fas fa-comments"></i></div>
+                            <div><h5 class="font-bold text-sm text-slate-800 dark:text-white">Forum</h5><p class="text-[10px] text-slate-400">Chat Kelas</p></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="section-tugas" class="page-content hide animate__animated animate__fadeInUp">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-black italic text-slate-800 dark:text-white">Daftar Tugas & PR</h3>
+                        <button onclick="window.addTugasModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-lg hover:bg-indigo-700 transition-all">+ Tambah Tugas</button>
+                    </div>
+                    <div id="tugas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+
+                <section id="section-wheel" class="page-content hide animate__animated animate__fadeIn">
+                    <div class="glass-panel p-8 text-center bg-white dark:bg-slate-800">
+                        <h3 class="text-2xl font-black italic mb-2 text-slate-800 dark:text-white">Random Student Picker</h3>
+                        <p class="text-xs text-slate-400 mb-8">Gunakan untuk memilih siswa menjawab pertanyaan guru.</p>
+                        
+                        <div class="wheel-container mb-8">
+                            <div class="pointer"></div>
+                            <div class="wheel" id="wheel-el"></div>
+                        </div>
+                        
+                        <button onclick="window.spinWheel()" class="bg-indigo-600 text-white px-10 py-4 rounded-full font-black text-xl shadow-xl hover:scale-105 hover:bg-indigo-500 transition-all active:scale-95">SPIN!</button>
+                        <p id="winner-result" class="mt-6 text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500 h-8"></p>
+                    </div>
+                </section>
+
+                <section id="section-idcard" class="page-content hide animate__animated animate__fadeIn">
+                    <div class="flex flex-col items-center">
+                        <div id="card-preview" class="w-[320px] h-[500px] bg-slate-900 rounded-[2rem] relative overflow-hidden shadow-2xl border-4 border-slate-800 p-6 flex flex-col items-center text-center text-white">
+                            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-indigo-600 to-slate-900 z-0"></div>
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500 rounded-full blur-2xl opacity-50"></div>
+                            
+                            <div class="relative z-10 mt-8 mb-4">
+                                <img id="card-ava" src="" class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover bg-slate-200">
+                            </div>
+                            
+                            <div class="relative z-10 space-y-1 mb-8">
+                                <h2 id="card-name" class="text-xl font-black uppercase tracking-tight">Nama Siswa</h2>
+                                <p id="card-role" class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Student</p>
+                            </div>
+
+                            <div class="w-full bg-white/10 backdrop-blur-sm p-4 rounded-xl mb-4 border border-white/5 relative z-10">
+                                <div class="grid grid-cols-2 gap-4 text-left">
+                                    <div><p class="text-[8px] text-slate-400 uppercase">Kelas</p><p class="font-bold text-sm">XII RPL 2</p></div>
+                                    <div><p class="text-[8px] text-slate-400 uppercase">NIS/Absen</p><p class="font-bold text-sm" id="card-absen">-</p></div>
+                                    <div class="col-span-2"><p class="text-[8px] text-slate-400 uppercase">Status</p><p class="font-bold text-sm text-green-400">Active Student</p></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto relative z-10">
+                                <div class="w-32 h-32 bg-white p-2 rounded-xl">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=RPL2_MEMBER" class="w-full h-full">
+                                </div>
+                                <p class="text-[8px] text-slate-500 mt-2">SCAN FOR VERIFICATION</p>
+                            </div>
+                        </div>
+                        <button onclick="alert('Screenshot layar untuk menyimpan kartu!')" class="mt-6 text-slate-400 text-xs font-bold hover:text-indigo-500"><i class="fas fa-download mr-2"></i>Simpan Kartu (Screenshot)</button>
                     </div>
                 </section>
 
                 <section id="section-chat" class="page-content hide animate__animated animate__fadeInUp">
-                    <div class="bg-white rounded-[3.5rem] shadow-2xl border flex flex-col h-[75vh] overflow-hidden">
-                        <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
-                            <h4 class="font-black italic text-xl">RPL 2 PUBLIC CHAT</h4>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Moderated by Walas</span>
+                    <div class="glass-panel h-[75vh] flex flex-col bg-white dark:bg-slate-800 overflow-hidden">
+                        <div class="p-4 border-b dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
+                            <h4 class="font-black italic text-lg text-slate-800 dark:text-white">CLASSROOM CHAT</h4>
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
                         </div>
-                        <div id="chat-box" class="chat-area p-10 space-y-6 custom-scroll flex-1 bg-slate-50/50"></div>
-                        <div class="p-6 bg-white border-t flex gap-4 items-center">
-                            <input type="text" id="chat-in" placeholder="Ketik pesan sopan..." class="flex-1 p-6 bg-slate-100 rounded-3xl font-bold outline-none focus:ring-4 ring-indigo-500/10 transition-all">
-                            <button onclick="window.pushChat()" class="w-20 h-20 bg-indigo-600 text-white rounded-3xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-indigo-200">
-                                <i class="fas fa-paper-plane text-2xl"></i>
-                            </button>
+                        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll bg-slate-50/50 dark:bg-transparent"></div>
+                        <div class="p-4 border-t dark:border-slate-700 bg-white dark:bg-slate-800 flex gap-2">
+                            <input type="text" id="chat-in" class="flex-1 p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ketik pesan...">
+                            <button onclick="window.pushChat()" class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-all"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </section>
 
-                <section id="section-admin" class="page-content hide bento animate__animated animate__fadeIn">
-                    <div class="flex justify-between items-center mb-10 border-b pb-6">
-                        <h3 class="text-3xl font-black italic text-indigo-600">Walas Control Center</h3>
-                        <button onclick="window.saveConfig()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-emerald-200 transition-all"><i class="fas fa-save mr-2"></i> Simpan Perubahan</button>
+                <section id="section-admin" class="page-content hide animate__animated animate__fadeIn">
+                    <div class="glass-panel p-6 border-l-8 border-l-indigo-600 bg-white dark:bg-slate-800 mb-8">
+                        <h3 class="text-2xl font-black italic text-indigo-600 mb-2">Walas Control Center</h3>
+                        <p class="text-sm text-slate-500">Edit Jadwal & Piket secara aman (Auto-Save Safe Mode).</p>
+                        <button onclick="window.saveConfig()" class="mt-4 bg-emerald-500 text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-emerald-600 transition-all w-full md:w-auto transform hover:-translate-y-1"><i class="fas fa-save mr-2"></i> SIMPAN PERUBAHAN KE DATABASE</button>
                     </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200">
-                            <div class="flex items-center gap-3 mb-6">
-                                <i class="fas fa-clock text-indigo-500 text-xl"></i>
-                                <p class="text-xs font-black uppercase text-slate-400 tracking-widest">Atur Jadwal Pelajaran (Real-time)</p>
-                            </div>
-                            <div class="space-y-4">
-                                <label class="block font-bold text-sm text-slate-500">Pilih Hari:</label>
-                                <select id="admin-day-select" onchange="window.renderAdminScheduleInput()" class="w-full p-4 rounded-xl border border-slate-300 font-bold mb-4">
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass-panel p-6 bg-white dark:bg-slate-800">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-black text-lg text-slate-800 dark:text-white">🔧 Edit Jadwal</h4>
+                                <select id="admin-day-select" onchange="window.renderAdminScheduleInput()" class="p-2 rounded-lg border text-xs font-bold bg-slate-50 dark:bg-slate-700">
                                     <option value="Senin">Senin</option>
                                     <option value="Selasa">Selasa</option>
                                     <option value="Rabu">Rabu</option>
                                     <option value="Kamis">Kamis</option>
                                     <option value="Jumat">Jumat</option>
                                 </select>
-                                <div id="admin-schedule-inputs" class="space-y-3">
-                                    </div>
                             </div>
+                            <div id="admin-schedule-container" class="space-y-3 mb-4"></div>
+                            <button onclick="window.addScheduleSlot()" class="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl text-slate-400 font-bold hover:border-indigo-500 hover:text-indigo-500 transition-all">+ Tambah Slot Jam</button>
                         </div>
 
-                        <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200">
-                            <div class="flex items-center gap-3 mb-6">
-                                <i class="fas fa-broom text-pink-500 text-xl"></i>
-                                <p class="text-xs font-black uppercase text-slate-400 tracking-widest">Atur Petugas Piket</p>
-                            </div>
-                            <div class="space-y-4">
-                                <label class="block font-bold text-sm text-slate-500">Pilih Hari:</label>
-                                <select id="admin-piket-day" onchange="window.renderAdminPiketInput()" class="w-full p-4 rounded-xl border border-slate-300 font-bold mb-4">
-                                    <option value="Senin">Senin</option>
-                                    <option value="Selasa">Selasa</option>
-                                    <option value="Rabu">Rabu</option>
-                                    <option value="Kamis">Kamis</option>
-                                    <option value="Jumat">Jumat</option>
-                                </select>
-                                <textarea id="admin-piket-names" rows="5" class="w-full p-4 rounded-xl border border-slate-300 font-bold" placeholder="Pisahkan nama dengan koma (Contoh: Andi, Budi, Citra)"></textarea>
-                                <p class="text-xs text-slate-400 italic">*Data otomatis tersinkron ke halaman Piket Siswa.</p>
-                            </div>
+                        <div class="glass-panel p-6 bg-white dark:bg-slate-800">
+                            <h4 class="font-black text-lg mb-4 text-slate-800 dark:text-white">🧹 Edit Piket</h4>
+                            <select id="admin-piket-day" onchange="window.renderAdminPiketInput()" class="w-full p-3 rounded-xl border font-bold mb-4 bg-slate-50 dark:bg-slate-700">
+                                <option value="Senin">Senin</option>
+                                <option value="Selasa">Selasa</option>
+                                <option value="Rabu">Rabu</option>
+                                <option value="Kamis">Kamis</option>
+                                <option value="Jumat">Jumat</option>
+                            </select>
+                            <textarea id="admin-piket-names" rows="5" class="w-full p-4 rounded-xl border font-bold text-sm bg-slate-50 dark:bg-slate-700" placeholder="Nama siswa..."></textarea>
                         </div>
                     </div>
                 </section>
 
                 <section id="section-absen" class="page-content hide">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="text-2xl font-black italic">Rekap Kehadiran</h3>
-                        <div class="flex gap-2 text-[10px] font-bold uppercase">
-                            <span class="px-3 py-1 bg-indigo-600 text-white rounded">H = Hadir</span>
-                            <span class="px-3 py-1 bg-yellow-400 text-white rounded">S = Sakit</span>
-                            <span class="px-3 py-1 bg-blue-400 text-white rounded">I = Izin</span>
-                            <span class="px-3 py-1 bg-red-500 text-white rounded">A = Alpha</span>
-                        </div>
-                    </div>
-                    <div id="absensi-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate__animated animate__fadeIn"></div>
-                </section>
-
-                <section id="section-extra" class="page-content hide">
-                    <h3 class="text-3xl font-black italic mb-8">30+ Class Apps</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6" id="features-grid">
-                        </div>
-                </section>
-
-                <section id="section-voting" class="page-content hide space-y-8">
-                     <div id="poll-ctrl" class="hide bento bg-indigo-50 border-indigo-100">
-                        <h4 class="font-black text-xl mb-6 italic">Buat Polling Baru (Ketua Kelas Only)</h4>
-                        <div class="flex gap-4">
-                            <input type="text" id="poll-q" placeholder="Contoh: Lokasi Jalan-jalan Kelas?" class="flex-1 p-5 rounded-2xl border-none shadow-inner font-bold outline-none">
-                            <button onclick="window.addPoll()" class="bg-indigo-600 text-white px-10 rounded-2xl font-black uppercase text-xs hover:bg-indigo-700 transition-all">Publish</button>
-                        </div>
-                    </div>
-                    <div id="poll-list" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+                    <h3 class="text-2xl font-black italic mb-6 text-slate-800 dark:text-white">Data Kehadiran</h3>
+                    <div id="absensi-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 animate__animated animate__fadeIn"></div>
                 </section>
 
                 <section id="section-piket" class="page-content hide">
-                    <h3 class="text-3xl font-black italic mb-8">Jadwal Piket Kebersihan</h3>
-                    <div id="piket-display-area" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                    <h3 class="text-2xl font-black italic mb-6 text-slate-800 dark:text-white">Jadwal Piket</h3>
+                    <div id="piket-display-area" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                 </section>
-                
-                <section id="section-kas" class="page-content hide bento flex flex-col items-center justify-center h-96">
-                    <i class="fas fa-wallet text-6xl text-indigo-200 mb-4"></i>
-                    <h3 class="text-2xl font-black">Fitur Uang Kas</h3>
-                    <p class="text-slate-500">Sedang dalam pengembangan Bendahara.</p>
-                </section>
+
             </div>
         </main>
     </div>
 
     <div id="modal-schedule" class="hide modal-overlay animate__animated animate__fadeIn">
-        <div class="bg-white w-11/12 max-w-4xl p-10 rounded-[3rem] shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="document.getElementById('modal-schedule').classList.add('hide')" class="absolute top-8 right-8 w-10 h-10 bg-slate-100 rounded-full font-black text-slate-500 hover:bg-red-500 hover:text-white transition-all">✕</button>
-            <h2 class="text-4xl font-black italic mb-8 text-indigo-600">Jadwal Mingguan</h2>
-            <div id="weekly-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                </div>
+        <div class="bg-white dark:bg-slate-800 w-11/12 max-w-4xl p-8 rounded-[2rem] shadow-2xl relative max-h-[85vh] overflow-y-auto border border-slate-200 dark:border-slate-700">
+            <button onclick="document.getElementById('modal-schedule').classList.add('hide')" class="absolute top-6 right-6 w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full font-black text-slate-500 hover:bg-red-500 hover:text-white transition-all">✕</button>
+            <h2 class="text-3xl font-black italic mb-6 text-indigo-600 dark:text-white">Jadwal Mingguan</h2>
+            <div id="weekly-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, query, limitToLast, remove, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // CONFIG
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCKoeMMj0-iAVb_xp998S1W3U4KU3fuFVs",
             authDomain: "web-kelaz.firebaseapp.com",
@@ -270,357 +364,340 @@
 
         // DATA CONSTANTS
         const MURID = ["A Fabian Syah", "Abdul Wafi", "Achmad Wildan", "Ahmad Alfi", "Ahmad Azriel", "Andrea Hafshah Oktavia", "Attaya Kayla", "Cahyo Kartiko", "Farrel Alkhayri", "Karina Sakila", "Kevin Oktavian Suryana", "Khaysila", "Kinddy Putra", "M Naufal Permana", "M Reza Febriansyah", "M Rizki Fadilah Guntor", "M Rizki Mulya", "M Rizqi Mubarak", "M Sigit Maulana", "M Tegar Alyasin", "M. Refi Yanto", "Moch Farel Al Khairy", "Muhamad Daffa Alexandrio", "Muhamad Raffi Alfathir", "Muhammad Ridwan", "Raehan Syafa", "Raffa Maydiansyah", "Rafi Izatul", "Rahil Aristya Aimar", "Rama Putra", "Ranie Dwi Putri", "Revan", "Syakirah Azraa", "Three Argha Zulita", "Vino Pratama", "Vino Sigit H", "Zainal Arifin"].sort();
-        const GURU_MAPEL = ["Bpk/Ibu B. Indonesia", "Bpk/Ibu B. Inggris", "Bpk/Ibu B. Jepang", "Bpk/Ibu Matematika", "Bpk/Ibu Sejarah", "Bpk/Ibu PKN", "Bpk/Ibu PKK", "Bpk/Ibu Produktif", "Bpk/Ibu PAI", "Bpk/Ibu PJOK"];
         const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        
+        // SYSTEM STATE
+        let localSchedule = {}; 
+        let localPiket = {};
+        window.tempSchedule = {}; // Safe Edit Buffer
 
-        // STATE
-        let localSchedule = {}; // Holds schedule data
-        let localPiket = {};    // Holds piket data
-
-        // --- AUTH & INIT ---
+        // --- AUTH SYSTEM ---
         window.syncLoginNames = () => {
-            const role = document.getElementById('login-role').value;
-            const sel = document.getElementById('login-name');
-            sel.innerHTML = '<option disabled selected>Pilih Nama...</option>';
-            let list = [];
-            if(role === 'Walas') list = ["Wali Kelas XII RPL 2"];
-            else if(role === 'Guru') list = GURU_MAPEL;
-            else list = MURID;
-            list.forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
+            const r = document.getElementById('login-role').value;
+            const s = document.getElementById('login-name');
+            s.innerHTML = '<option disabled selected>Pilih Nama...</option>';
+            let l = (r === 'Walas') ? ["Wali Kelas"] : (r === 'Guru' ? ["Guru Mapel"] : MURID);
+            l.forEach(n => s.innerHTML += `<option value="${n}">${n}</option>`);
         };
 
         window.doLogin = () => {
             const r = document.getElementById('login-role').value;
             const n = document.getElementById('login-name').value;
-            if(!r || !n || n === 'Pilih Nama...') return alert("Pilih Role dan Nama dulu!");
-            localStorage.setItem('user_v6', JSON.stringify({ n, r }));
+            if(!r || !n) return alert("Pilih Role & Nama!");
+            localStorage.setItem('user_v4', JSON.stringify({ n, r }));
             initApp();
         };
 
         window.logout = () => { localStorage.clear(); location.reload(); };
 
+        // --- NAVIGATION & UI ---
         window.nav = (p) => {
             document.querySelectorAll('.page-content').forEach(e => e.classList.add('hide'));
             document.querySelectorAll('.sidebar-btn').forEach(e => e.classList.remove('sidebar-active'));
+            
             document.getElementById('section-'+p).classList.remove('hide');
-            const btn = document.getElementById('btn-'+p);
-            if(btn) btn.classList.add('sidebar-active');
-            document.getElementById('page-title').innerText = p.replace('extra', 'Apps').toUpperCase();
+            if(document.getElementById('btn-'+p)) document.getElementById('btn-'+p).classList.add('sidebar-active');
+            
+            document.getElementById('page-title').innerText = p === 'dash' ? 'DASHBOARD' : p.toUpperCase();
+            document.querySelector('aside').classList.remove('open');
+
+            if(p === 'admin') { 
+                // Initialize Temp Buffer Deep Copy
+                window.tempSchedule = JSON.parse(JSON.stringify(localSchedule));
+                window.renderAdminScheduleInput(); 
+                window.renderAdminPiketInput(); 
+            }
+            if(p === 'idcard') window.renderIDCard();
         };
 
+        // --- INIT ---
         function initApp() {
-            const user = JSON.parse(localStorage.getItem('user_v6'));
-            if(!user) return;
+            const u = JSON.parse(localStorage.getItem('user_v4'));
+            if(!u) return;
             document.getElementById('view-login').classList.add('hide');
             document.getElementById('view-app').classList.remove('hide');
-            document.getElementById('u-name').innerText = user.n;
-            document.getElementById('u-role').innerText = user.r;
+            document.getElementById('u-name').innerText = u.n;
+            document.getElementById('u-role').innerText = u.r;
             
-            const ava = localStorage.getItem('ava_'+user.n);
-            document.getElementById('my-ava').src = ava || `https://ui-avatars.com/api/?name=${user.n}&background=random`;
+            const ava = localStorage.getItem('ava_'+u.n);
+            document.getElementById('my-ava').src = ava || `https://ui-avatars.com/api/?name=${u.n}&background=random`;
 
-            // Permission Logic
-            if(user.r === 'Walas' || user.r === 'Guru') document.getElementById('admin-gate').classList.remove('hide');
-            if(user.r === 'Ketua Kelas') document.getElementById('poll-ctrl').classList.remove('hide');
+            if(['Walas','Guru'].includes(u.r)) document.getElementById('admin-gate').classList.remove('hide');
 
-            // Dark Mode check
-            const hour = new Date().getHours();
-            if(hour >= 18 || hour < 6) document.body.classList.add('dark-mode');
-
-            renderFeatures();
             startClocks();
             syncData();
             window.nav('dash');
         }
 
-        // --- CORE FEATURES ---
-
-        // 1. CHAT
-        window.pushChat = () => {
-            const u = JSON.parse(localStorage.getItem('user_v6'));
-            const t = document.getElementById('chat-in').value;
-            if(!t) return;
-            push(ref(db, 'chats_v6'), {
-                n: u.n, r: u.r, t: t,
-                ava: localStorage.getItem('ava_'+u.n) || '',
-                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-                ts: Date.now()
-            });
-            document.getElementById('chat-in').value = '';
-        };
-
-        window.delChat = (id) => {
-            if(confirm('Hapus chat ini?')) remove(ref(db, 'chats_v6/' + id));
-        };
-
-        // 2. ABSENSI (FIXED)
-        window.updateAbsen = (nameKey, status) => {
-            const u = JSON.parse(localStorage.getItem('user_v6'));
-            // Security Check
-            if(!['Walas', 'Sekretaris', 'Ketua Kelas'].includes(u.r)) {
-                return alert("Akses Ditolak: Hanya Perangkat Kelas yang boleh ubah absen!");
-            }
-            set(ref(db, `absen_v6/${nameKey}`), status);
-        };
-
-        // 3. POLLING (FIXED)
-        window.addPoll = () => {
-            const q = document.getElementById('poll-q').value;
-            if(!q) return;
-            push(ref(db, 'polls_v6'), { q, creator: 'Ketua Kelas', ts: Date.now() });
-            document.getElementById('poll-q').value = '';
-        };
-
-        window.vote = (id, choice) => {
-            const u = JSON.parse(localStorage.getItem('user_v6'));
-            if(u.r === 'Walas' || u.r === 'Guru') return alert('Mohon maaf, Guru/Walas tidak diperkenankan voting agar hasil murni dari siswa.');
-            set(ref(db, `polls_v6/${id}/votes/${u.n.replace(/[.#$/[\]]/g, '_')}`), choice);
-        };
-
-        // 4. WALAS ADMIN & SCHEDULE (NEW)
+        // --- FEATURE 1: SAFE SCHEDULE EDITOR (FIX UNDEFINED) ---
         window.renderAdminScheduleInput = () => {
             const day = document.getElementById('admin-day-select').value;
-            const container = document.getElementById('admin-schedule-inputs');
+            const container = document.getElementById('admin-schedule-container');
             container.innerHTML = '';
+
+            // Ensure buffer array exists
+            if(!window.tempSchedule[day]) window.tempSchedule[day] = [];
             
-            const currentSchedule = localSchedule[day] || ["", "", "", ""];
-            
-            // Generate 4 slots (Pagi, Siang 1, Siang 2, Sore)
-            const slots = ["07:00 - 09:00", "09:00 - 10:00", "10:15 - 12:00", "13:00 - 15:00"];
-            slots.forEach((time, idx) => {
-                const val = currentSchedule[idx] || "";
+            // Loop buffer
+            window.tempSchedule[day].forEach((slot, idx) => {
+                const t = slot ? slot.t : ""; // Safe access
+                const s = slot ? slot.s : "";
+                
                 container.innerHTML += `
-                    <div class="flex items-center gap-2">
-                        <span class="w-24 text-[10px] font-bold bg-slate-200 p-2 rounded text-center">${time}</span>
-                        <input type="text" id="sch-${day}-${idx}" value="${val}" class="flex-1 p-3 border rounded-lg text-sm font-bold" placeholder="Mata Pelajaran...">
-                    </div>`;
+                    <div class="flex gap-2 items-center animate__animated animate__fadeIn mb-2">
+                        <input type="text" onchange="window.updateTempSch('${day}',${idx}, 't', this.value)" value="${t}" placeholder="Jam (07:00-08:00)" class="w-1/3 p-3 rounded-xl border text-sm font-bold bg-slate-50 dark:bg-slate-700 dark:border-slate-600">
+                        <input type="text" onchange="window.updateTempSch('${day}',${idx}, 's', this.value)" value="${s}" placeholder="Mapel" class="flex-1 p-3 rounded-xl border text-sm font-bold bg-slate-50 dark:bg-slate-700 dark:border-slate-600">
+                        <button onclick="window.delScheduleSlot('${day}', ${idx})" class="w-10 h-10 bg-red-100 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
             });
         };
 
-        window.renderAdminPiketInput = () => {
-            const day = document.getElementById('admin-piket-day').value;
-            const names = localPiket[day] || "";
-            document.getElementById('admin-piket-names').value = names;
+        window.updateTempSch = (d, i, k, v) => { 
+            if(!window.tempSchedule[d][i]) window.tempSchedule[d][i] = {};
+            window.tempSchedule[d][i][k] = v; 
+        };
+
+        window.addScheduleSlot = () => {
+            const d = document.getElementById('admin-day-select').value;
+            if(!window.tempSchedule[d]) window.tempSchedule[d] = [];
+            window.tempSchedule[d].push({t:"", s:""});
+            window.renderAdminScheduleInput();
+        };
+
+        window.delScheduleSlot = (d, i) => {
+            window.tempSchedule[d].splice(i, 1);
+            window.renderAdminScheduleInput();
         };
 
         window.saveConfig = () => {
-            const u = JSON.parse(localStorage.getItem('user_v6'));
-            if(u.r !== 'Walas' && u.r !== 'Guru') return alert('Hanya Walas/Guru yang bisa simpan!');
-
-            // Save Schedule
-            const daySch = document.getElementById('admin-day-select').value;
-            const newSch = [];
-            for(let i=0; i<4; i++) newSch.push(document.getElementById(`sch-${daySch}-${i}`).value);
-            set(ref(db, `config_v6/schedule/${daySch}`), newSch);
-
+            // Push Deep Copy from Buffer to Firebase
+            set(ref(db, 'config_v6/schedule'), window.tempSchedule);
+            
             // Save Piket
-            const dayPik = document.getElementById('admin-piket-day').value;
-            const newPik = document.getElementById('admin-piket-names').value;
-            set(ref(db, `config_v6/piket/${dayPik}`), newPik);
+            const pd = document.getElementById('admin-piket-day').value;
+            const pn = document.getElementById('admin-piket-names').value;
+            set(ref(db, `config_v6/piket/${pd}`), pn);
 
-            alert('Data Berhasil Disimpan & Sinkron ke Seluruh Kelas!');
+            alert('✅ DATA TERSIMPAN AMAN KE DATABASE!');
         };
 
-        // 5. WEEKLY SCHEDULE VIEW
+        // --- FEATURE 2: TUGAS / PR ---
+        window.addTugasModal = () => {
+            const t = prompt("Nama Tugas / PR:");
+            const d = prompt("Deadline (Contoh: Besok, 25 Jan):");
+            if(t && d) {
+                const u = JSON.parse(localStorage.getItem('user_v4'));
+                push(ref(db, 'tugas_v4'), { t, d, by: u.n, ts: -Date.now() });
+            }
+        };
+
+        window.delTugas = (k) => {
+             const u = JSON.parse(localStorage.getItem('user_v4'));
+             if(['Walas','Guru','Ketua Kelas'].includes(u.r)) {
+                 if(confirm("Hapus tugas ini?")) remove(ref(db, 'tugas_v4/'+k));
+             } else alert("Hanya Pengurus Inti!");
+        };
+
+        // --- FEATURE 3: SPIN WHEEL ---
+        window.spinWheel = () => {
+            const wheel = document.getElementById('wheel-el');
+            // Create segments
+            wheel.innerHTML = '';
+            const count = MURID.length;
+            const deg = 360 / count;
+            
+            // Simple render
+            wheel.style.background = `conic-gradient(
+                ${MURID.map((m, i) => {
+                    const color = i % 2 === 0 ? '#6366f1' : '#ec4899';
+                    return `${color} ${i*deg}deg ${(i+1)*deg}deg`;
+                }).join(', ')}
+            )`;
+
+            const rand = Math.floor(Math.random() * 3600) + 360; // Min 1 spin
+            wheel.style.transform = `rotate(${rand}deg)`;
+            
+            // Calculate winner
+            setTimeout(() => {
+                const actualDeg = rand % 360;
+                const index = Math.floor((360 - actualDeg) / deg) % count;
+                document.getElementById('winner-result').innerText = "🎉 " + MURID[index];
+            }, 4000);
+        };
+
+        // --- FEATURE 4: DIGITAL ID CARD ---
+        window.renderIDCard = () => {
+             const u = JSON.parse(localStorage.getItem('user_v4'));
+             document.getElementById('card-name').innerText = u.n;
+             document.getElementById('card-role').innerText = u.r;
+             document.getElementById('card-ava').src = document.getElementById('my-ava').src;
+             // Simulate fake NIS based on name length
+             document.getElementById('card-absen').innerText = "2024." + (u.n.length * 123);
+        };
+
+        // --- FEATURE 5: BOT ---
+        window.askBot = () => {
+            const q = document.getElementById('bot-input').value.toLowerCase();
+            const r = document.getElementById('bot-response');
+            
+            if(q.includes('jadwal')) {
+                r.innerText = "Cek dashboard bagian Live Class atau menu Jadwal Mingguan ya!";
+            } else if(q.includes('pr') || q.includes('tugas')) {
+                r.innerText = "Coba buka menu Tugas. Kalau kosong berarti aman!";
+            } else if(q.includes('halo')) {
+                r.innerText = "Halo! Semangat belajar hari ini.";
+            } else {
+                r.innerText = "Maaf, saya bot sederhana. Coba tanya 'jadwal' atau 'pr'.";
+            }
+            document.getElementById('bot-input').value = '';
+        };
+
+        // --- CORE LOGIC ---
         window.showWeeklySchedule = () => {
-            const grid = document.getElementById('weekly-grid');
-            grid.innerHTML = '';
+            const g = document.getElementById('weekly-grid');
+            g.innerHTML = '';
             DAYS.forEach(d => {
-                const s = localSchedule[d] || ["-", "-", "-", "-"];
-                grid.innerHTML += `
-                    <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
-                        <h4 class="font-black text-xl mb-4 text-indigo-600">${d}</h4>
-                        <ul class="space-y-2 text-sm font-bold text-slate-600">
-                            <li>⏰ 07-09: ${s[0] || '-'}</li>
-                            <li>⏰ 09-10: ${s[1] || '-'}</li>
-                            <li>⏰ 10-12: ${s[2] || '-'}</li>
-                            <li>⏰ 13-15: ${s[3] || '-'}</li>
-                        </ul>
-                    </div>
-                `;
+                const s = localSchedule[d] || [];
+                let h = `<div class="bg-slate-50 dark:bg-slate-700 p-5 rounded-xl border dark:border-slate-600"><h4 class="font-black text-indigo-500 mb-3">${d}</h4><ul class="space-y-2 text-sm">`;
+                if(s.length === 0) h += `<li class="text-slate-400 italic">Libur</li>`;
+                s.forEach(x => h += `<li class="flex justify-between border-b border-dashed dark:border-slate-600 pb-1"><span class="dark:text-slate-300">${x.t}</span><span class="font-bold dark:text-white">${x.s}</span></li>`);
+                h += `</ul></div>`;
+                g.innerHTML += h;
             });
             document.getElementById('modal-schedule').classList.remove('hide');
         };
 
-        // --- SYNC & RENDER ---
+        window.updateAbsen = (k, v) => set(ref(db, `absen_v6/${k}`), v);
+        window.pushChat = () => {
+             const u = JSON.parse(localStorage.getItem('user_v4'));
+             const t = document.getElementById('chat-in').value;
+             if(t) {
+                 push(ref(db, 'chats_v4'), { n: u.n, m: t, ts: Date.now() });
+                 document.getElementById('chat-in').value = '';
+             }
+        };
+
+        // --- SYNC ENGINE ---
         function syncData() {
-            const user = JSON.parse(localStorage.getItem('user_v6'));
-
-            // Chat Sync
-            onValue(query(ref(db, 'chats_v6'), limitToLast(50)), (snap) => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML = '';
-                snap.forEach(c => {
-                    const m = c.val();
-                    const isMe = m.n === user.n;
-                    const canDel = (user.r === 'Walas' || user.r === 'Ketua Kelas');
-                    const ava = m.ava || `https://ui-avatars.com/api/?name=${m.n}&background=random`;
-                    
-                    box.innerHTML += `
-                        <div class="flex gap-4 ${isMe ? 'flex-row-reverse' : ''} animate__animated animate__fadeInUp">
-                            <img src="${ava}" class="w-10 h-10 rounded-full shadow-md object-cover">
-                            <div class="max-w-[75%] relative group">
-                                <p class="text-[9px] font-black uppercase text-slate-400 mb-1 ${isMe ? 'text-right' : ''}">${m.n} • ${m.r}</p>
-                                <div class="p-4 rounded-2xl ${isMe ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border rounded-tl-none'} shadow-sm text-sm font-medium leading-relaxed">
-                                    ${m.t}
-                                </div>
-                                <span class="text-[8px] text-slate-300 block mt-1 ${isMe ? 'text-right' : ''}">${m.time}</span>
-                                ${canDel ? `<button onclick="window.delChat('${c.key}')" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-all shadow-lg">✕</button>` : ''}
-                            </div>
-                        </div>`;
-                });
-                box.scrollTop = box.scrollHeight;
-            });
-
-            // Config Sync (Schedule & Piket)
-            onValue(ref(db, 'config_v6'), (snap) => {
-                const data = snap.val() || {};
-                localSchedule = data.schedule || {};
-                localPiket = data.piket || {};
+            // Config Sync
+            onValue(ref(db, 'config_v6'), (s) => {
+                const d = s.val() || {};
+                localSchedule = d.schedule || {};
+                localPiket = d.piket || {};
                 
-                // Update Admin Inputs if open
-                if(!document.getElementById('section-admin').classList.contains('hide')) {
-                    window.renderAdminScheduleInput();
-                    window.renderAdminPiketInput();
+                // Jika user BUKAN admin, update tempSchedule dari server agar up-to-date
+                // Jika Admin, jangan update tempSchedule agar editan tidak hilang saat orang lain update
+                const u = JSON.parse(localStorage.getItem('user_v4'));
+                if(!['Walas','Guru'].includes(u.r)) {
+                    window.tempSchedule = localSchedule; 
                 }
 
-                // Render Public Piket
-                const piketArea = document.getElementById('piket-display-area');
-                piketArea.innerHTML = '';
-                DAYS.forEach(d => {
-                    piketArea.innerHTML += `
-                        <div class="bento bg-white p-6">
-                            <h4 class="font-black text-lg text-indigo-600 mb-2">${d}</h4>
-                            <p class="font-bold text-slate-600 text-sm">${localPiket[d] || "Belum ditentukan"}</p>
+                // Render Piket Public
+                const pa = document.getElementById('piket-display-area');
+                pa.innerHTML = '';
+                DAYS.forEach(day => {
+                   pa.innerHTML += `<div class="bg-white dark:bg-slate-700 p-6 rounded-2xl border dark:border-slate-600 shadow-sm"><h4 class="font-black text-indigo-500 mb-2">${day}</h4><p class="text-sm font-medium text-slate-600 dark:text-slate-300">${localPiket[day] || '-'}</p></div>`;
+                });
+            });
+
+            // Tugas Sync
+            onValue(ref(db, 'tugas_v4'), (s) => {
+                const l = document.getElementById('tugas-list');
+                l.innerHTML = '';
+                s.forEach(c => {
+                    const d = c.val();
+                    l.innerHTML += `
+                        <div class="glass-panel p-4 flex justify-between items-center bg-white dark:bg-slate-700">
+                            <div>
+                                <h5 class="font-bold text-slate-800 dark:text-white">${d.t}</h5>
+                                <p class="text-xs text-red-500 font-bold"><i class="fas fa-clock mr-1"></i> Deadline: ${d.d}</p>
+                                <p class="text-[10px] text-slate-400">By: ${d.by}</p>
+                            </div>
+                            <button onclick="window.delTugas('${c.key}')" class="text-slate-300 hover:text-red-500"><i class="fas fa-trash"></i></button>
                         </div>
                     `;
                 });
             });
 
-            // Absen Sync
-            onValue(ref(db, 'absen_v6'), (snap) => {
-                const data = snap.val() || {};
-                const grid = document.getElementById('absensi-grid');
-                grid.innerHTML = MURID.map(m => {
-                    const k = m.replace(/[.#$/[\]]/g, '_'); // Firebase safe key
-                    const s = data[k] || 'H'; // Default Hadir
-                    
-                    // Style Button Logic
-                    const btnStyle = (val, color) => `
-                        <button onclick="window.updateAbsen('${k}', '${val}')" 
-                        class="w-8 h-8 rounded-lg text-[10px] font-black transition-all ${s === val ? `bg-${color}-500 text-white scale-110 shadow-lg` : 'bg-slate-100 text-slate-300 hover:bg-slate-200'}">
-                        ${val}</button>`;
-
-                    return `
-                        <div class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
-                            <span class="text-[11px] font-bold truncate max-w-[120px]">${m}</span>
-                            <div class="flex gap-1">
-                                ${btnStyle('H', 'indigo')}
-                                ${btnStyle('S', 'yellow')}
-                                ${btnStyle('I', 'blue')}
-                                ${btnStyle('A', 'red')}
-                            </div>
-                        </div>`;
-                }).join('');
-            });
-
-            // Polling Sync
-            onValue(ref(db, 'polls_v6'), (snap) => {
-                const box = document.getElementById('poll-list');
-                box.innerHTML = '';
-                snap.forEach(c => {
-                    const p = c.val();
-                    const votes = p.votes ? Object.values(p.votes) : [];
-                    const yes = votes.filter(v => v === 'Y').length;
-                    const no = votes.filter(v => v === 'N').length;
-                    const total = yes + no || 1;
-                    
-                    box.innerHTML += `
-                        <div class="bento !p-6">
-                            <h4 class="font-black text-lg mb-4 leading-tight">${p.q}</h4>
-                            <div class="flex gap-2 mb-4">
-                                <button onclick="window.vote('${c.key}','Y')" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-black text-xs hover:bg-emerald-600">SETUJU (${yes})</button>
-                                <button onclick="window.vote('${c.key}','N')" class="flex-1 py-3 bg-red-500 text-white rounded-xl font-black text-xs hover:bg-red-600">TIDAK (${no})</button>
-                            </div>
-                            <div class="h-3 bg-slate-100 rounded-full overflow-hidden flex">
-                                <div class="bg-emerald-500 h-full transition-all duration-1000" style="width: ${(yes/total)*100}%"></div>
-                                <div class="bg-red-500 h-full transition-all duration-1000" style="width: ${(no/total)*100}%"></div>
-                            </div>
+            // Chat Sync
+            onValue(ref(db, 'chats_v4'), (s) => {
+                const b = document.getElementById('chat-box');
+                b.innerHTML = '';
+                const u = JSON.parse(localStorage.getItem('user_v4'));
+                s.forEach(c => {
+                    const d = c.val();
+                    const me = d.n === u.n;
+                    b.innerHTML += `
+                        <div class="flex flex-col ${me?'items-end':'items-start'} animate__animated animate__fadeInUp">
+                            <span class="text-[9px] font-bold text-slate-400 mb-1 px-2">${d.n}</span>
+                            <div class="max-w-[85%] p-3 rounded-2xl ${me?'bg-indigo-600 text-white rounded-tr-none':'bg-white dark:bg-slate-700 dark:text-white border dark:border-slate-600 rounded-tl-none'} text-sm shadow-sm leading-relaxed">${d.m}</div>
                         </div>`;
                 });
+                b.scrollTop = b.scrollHeight;
+            });
+
+            // Absen Sync
+            onValue(ref(db, 'absen_v6'), (s) => {
+                const d = s.val() || {};
+                const g = document.getElementById('absensi-grid');
+                g.innerHTML = MURID.map(m => {
+                    const k = m.replace(/[.#$/[\]]/g, '_');
+                    const v = d[k] || 'H';
+                    const btn = (l,c) => `<button onclick="window.updateAbsen('${k}','${l}')" class="w-8 h-8 rounded-lg text-[10px] font-black ${v===l?`bg-${c}-500 text-white shadow-lg scale-110`:'bg-slate-100 dark:bg-slate-700 text-slate-400'} transition-all">${l}</button>`;
+                    return `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border dark:border-slate-700 flex justify-between items-center"><span class="text-[10px] font-bold truncate w-24 dark:text-white">${m}</span><div class="flex gap-1">${btn('H','indigo')}${btn('S','yellow')}${btn('I','blue')}${btn('A','red')}</div></div>`;
+                }).join('');
             });
         }
 
-        // --- UTILS & CLOCK ---
+        window.renderAdminPiketInput = () => {
+             const d = document.getElementById('admin-piket-day').value;
+             document.getElementById('admin-piket-names').value = localPiket[d] || "";
+        }
+
+        // --- CLOCK & SCHEDULE ENGINE ---
         function startClocks() {
             setInterval(() => {
                 const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                document.getElementById('date-now').innerText = now.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'short'});
                 
-                // Smart Mapel Logic
-                const dayName = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][now.getDay()];
-                const hour = now.getHours();
-                const currentSch = localSchedule[dayName] || [];
+                const dName = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][now.getDay()];
+                const slots = localSchedule[dName] || [];
+                let cMapel = "Istirahat / Free";
+                let cJam = "--:--";
                 
-                let mapel = "Jam Bebas / Pulang";
-                let jam = "--:--";
+                const curM = now.getHours() * 60 + now.getMinutes();
                 
-                if(currentSch.length > 0) {
-                    if(hour >= 7 && hour < 9) { mapel = currentSch[0]; jam = "07:00 - 09:00"; }
-                    else if(hour >= 9 && hour < 10) { mapel = currentSch[1]; jam = "09:00 - 10:00"; }
-                    else if(hour >= 10 && hour < 12) { mapel = currentSch[2]; jam = "10:15 - 12:00"; }
-                    else if(hour >= 13 && hour < 15) { mapel = currentSch[3]; jam = "13:00 - 15:00"; }
-                }
-
-                document.getElementById('live-mapel').innerText = mapel || "Free Class";
-                document.getElementById('live-jam').innerText = jam;
-
+                slots.forEach(s => {
+                    if(s.t && s.t.includes('-')) {
+                        const [start, end] = s.t.split('-').map(x => x.trim());
+                        const [sh, sm] = start.split(':').map(Number);
+                        const [eh, em] = end.split(':').map(Number);
+                        const sMin = sh*60 + sm;
+                        const eMin = eh*60 + em;
+                        
+                        if(curM >= sMin && curM < eMin) {
+                            cMapel = s.s;
+                            cJam = s.t;
+                        }
+                    }
+                });
+                
+                document.getElementById('live-mapel').innerText = cMapel;
+                document.getElementById('live-jam').innerText = cJam;
             }, 1000);
         }
 
-        function renderFeatures() {
-            const list = [
-                {icon: 'fa-qrcode', name: 'QR Absen', color: 'text-purple-500', note: 'Scan Masuk'},
-                {icon: 'fa-pencil-ruler', name: 'Alat Tulis', color: 'text-amber-500', note: 'Pinjam Digital'},
-                {icon: 'fa-images', name: 'Galeri', color: 'text-pink-500', note: 'Foto Kelas'},
-                {icon: 'fa-tasks', name: 'Projects', color: 'text-blue-500', note: 'Tugas Kelompok'},
-                {icon: 'fa-music', name: 'Playlist', color: 'text-green-500', note: 'Spotify Kelas'},
-                {icon: 'fa-newspaper', name: 'News', color: 'text-red-500', note: 'Berita Internal'},
-                {icon: 'fa-trophy', name: 'Ranking', color: 'text-yellow-500', note: 'Top Siswa'},
-                {icon: 'fa-folder-open', name: 'Portofolio', color: 'text-cyan-500', note: 'Karya Siswa'},
-                {icon: 'fa-bullseye', name: 'Goals', color: 'text-indigo-500', note: 'Target Nilai'},
-                {icon: 'fa-heartbeat', name: 'Health', color: 'text-rose-500', note: 'Info Sakit'},
-                {icon: 'fa-gavel', name: 'Rules', color: 'text-slate-500', note: 'Aturan Kelas'},
-                {icon: 'fa-birthday-cake', name: 'Ultah', color: 'text-orange-500', note: 'Kalender'},
-                {icon: 'fa-moon', name: 'Dark Mode', color: 'text-slate-800', note: 'Auto Theme'},
-                {icon: 'fa-code', name: 'Snippets', color: 'text-emerald-500', note: 'Share Code'},
-                {icon: 'fa-sticky-note', name: 'Guru Note', color: 'text-violet-500', note: 'Pesan Guru'}
-            ];
-            
-            const grid = document.getElementById('features-grid');
-            list.forEach(i => {
-                grid.innerHTML += `
-                    <div onclick="alert('Fitur ${i.name} akan segera hadir di update v2.0!')" class="bg-white p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all group">
-                        <i class="fas ${i.icon} text-3xl mb-3 ${i.color} group-hover:scale-110 transition-transform"></i>
-                        <h5 class="font-black text-xs uppercase tracking-wider text-slate-700">${i.name}</h5>
-                        <p class="text-[9px] text-slate-400 mt-1">${i.note}</p>
-                    </div>
-                `;
-            });
-        }
-
-        // Upload Logic
         document.getElementById('up-ava').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const user = JSON.parse(localStorage.getItem('user_v6'));
-                localStorage.setItem('ava_'+user.n, ev.target.result);
-                document.getElementById('my-ava').src = ev.target.result;
+            const r = new FileReader();
+            r.onload = (v) => {
+                localStorage.setItem('ava_'+JSON.parse(localStorage.getItem('user_v4')).n, v.target.result);
+                document.getElementById('my-ava').src = v.target.result;
             };
-            reader.readAsDataURL(e.target.files[0]);
+            r.readAsDataURL(e.target.files[0]);
         });
 
-        // Initialize
         initApp();
     </script>
 </body>
